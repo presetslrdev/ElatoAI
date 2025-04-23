@@ -103,6 +103,9 @@ ElatoAI consists of three main components:
 12. **Conversations with WebRTC and Websockets**: Talk to your AI with WebRTC on the NextJS webapp and with websockets on the ESP32.
 13. **Volume Control**: Control the volume of the ESP32 speaker from the NextJS webapp.
 14. **Realtime Transcripts**: The realtime transcripts of your conversations are stored in the Supabase DB.
+15. **OTA Updates**: Over the Air Updates for the ESP32 firmware.
+16. **Wifi Management**: Connect to your Wifi network from the ESP32 device.
+17. **Factory Reset**: Factory reset the ESP32 device from the NextJS webapp.
 
 ## 🛠 Tech Stack
 
