@@ -21,10 +21,29 @@ https://github.com/user-attachments/assets/aa60e54c-5847-4a68-80b5-5d6b1a5b9328
   <img src="https://img.shields.io/badge/Watch%20Demo-YouTube-red?style=for-the-badge&logo=youtube" alt="Watch Demo on YouTube">
 </a>
 
-## ⚡️ Hardware Design
+## ⚡️ DIY Hardware Design
 
 <img src="pcb-design.png" alt="Hardware Setup" width="100%">
 
+## Products
+
+| Product | Description | Features |
+|---------|-------------|----------|
+| **[Elato AI Device](https://www.elatoai.com/products)** | Transform any toy into an AI companion with any voice and personality with  OpenAI Realtime API | • Works with any toy or plushie<br>• Create unlimited AI characters<br>• First month subscription FREE<br>• Easy to set up in minutes |
+| **[Elato AI Dev Kit](https://www.elatoai.com/products/ai-devkit)** | Create custom speech-to-speech AI experiences | • Flash our open source code to your device<br>• Flexible speaker and Lipo battery options<br>• Set your own voice and personality<br>• Attach a custom case |
+
+## Our Products
+
+| Product | Description | Price | Features |
+|---------|-------------|-------|----------|
+| <img src="elato-ai-device.jpeg" alt="Elato AI Device" width="150"><br>**[Elato AI Device](https://www.elatoai.com/products)** | Transform any toy into an AI companion with any voice and personality with  OpenAI Realtime API | $55 | • Works with any toy or plushie<br>• Create unlimited AI characters<br>• First month subscription FREE<br>• Easy to set up in minutes |
+| <img src="elato-ai-devkit.png" alt="Elato AI Dev Kit" width="150"><br>**[Elato AI Dev Kit](https://www.elatoai.com/products/ai-devkit)** | Create custom speech-to-speech agentic AI experiences for developers | $45 | • Flash our open source code to your device<br>• Flexible speaker and Lipo battery options<br>• Set your own voice and personality<br>• Attach a custom case |
+
+<div align="center">
+  <a href="https://www.elatoai.com/products">
+    <img src="https://img.shields.io/badge/Buy%20Now-ElatoAI%20Store-purple?style=for-the-badge" alt="Buy Now">
+  </a>
+</div>
 
 ## Getting Started
 
