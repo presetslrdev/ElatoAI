@@ -37,7 +37,7 @@
    ```
    SUPABASE_URL=http://127.0.0.1:54321
    SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-   JWT_SECRET=super-secret-jwt-token-with-at-least-32-characters-long
+   JWT_SECRET_KEY=super-secret-jwt-token-with-at-least-32-characters-long
    ```
 
 ## Tables chart
