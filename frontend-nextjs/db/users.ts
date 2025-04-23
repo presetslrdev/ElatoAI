@@ -3,7 +3,7 @@ import { type SupabaseClient, type User } from "@supabase/supabase-js";
 export const createUser = async (
     supabase: SupabaseClient,
     user: User,
-    userProps: Partial<IUser>
+    userProps: Partial<IUser>,
 ) => {
     // console.log("creating user", user, userProps);
 
@@ -18,9 +18,10 @@ export const createUser = async (
             supervisee_persona: "",
             personality_id: userProps.personality_id, // selecting default personality
             session_time: 0,
-            avatar_url:
-                user.user_metadata?.avatar_url ??
-                `/user_avatar/user_avatar_${Math.floor(Math.random() * 10)}.png`,
+            avatar_url: user.user_metadata?.avatar_url ??
+                `/user_avatar/user_avatar_${
+                    Math.floor(Math.random() * 10)
+                }.png`,
         } as IUser,
     ]);
 
@@ -31,7 +32,7 @@ export const createUser = async (
 
 export const getSimpleUserById = async (
     supabase: SupabaseClient,
-    id: string
+    id: string,
 ) => {
     const { data, error } = await supabase
         .from("users")
@@ -40,7 +41,7 @@ export const getSimpleUserById = async (
         .single();
 
     if (error) {
-        console.log("error", error);
+        console.log("error in getSimpleUserById", error);
     }
 
     return data as IUser | undefined;
@@ -50,13 +51,13 @@ export const getUserById = async (supabase: SupabaseClient, id: string) => {
     const { data, error } = await supabase
         .from("users")
         .select(
-            `*, personality:personality_id(*), device:devices!users_device_id_fkey(device_id, volume)`
+            `*, personality:personality_id(*), device:devices!users_device_id_fkey(device_id, volume)`,
         )
         .eq("user_id", id)
         .single();
 
     if (error) {
-        console.log("error", error);
+        console.log("error in getUserById", error);
     }
 
     return data as IUser | undefined;
@@ -64,7 +65,7 @@ export const getUserById = async (supabase: SupabaseClient, id: string) => {
 
 export const doesUserExist = async (
     supabase: SupabaseClient,
-    authUser: User
+    authUser: User,
 ) => {
     const { data: user, error } = await supabase
         .from("users")
@@ -73,7 +74,7 @@ export const doesUserExist = async (
         .single();
 
     if (error) {
-        console.log("error", error);
+        console.log("error in doesUserExist", error);
     }
 
     return !!user;
@@ -82,7 +83,7 @@ export const doesUserExist = async (
 export const updateUser = async (
     supabase: SupabaseClient,
     user: Partial<IUser>,
-    userId: string
+    userId: string,
 ) => {
     const { error } = await supabase
         .from("users")

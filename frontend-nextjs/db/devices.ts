@@ -1,8 +1,9 @@
 import { SupabaseClient } from "@supabase/supabase-js";
+import { updateUser } from "./users";
 
 export const dbCheckUserCode = async (
     supabase: SupabaseClient,
-    userCode: string
+    userCode: string,
 ) => {
     const { data, error } = await supabase
         .from("devices")
@@ -19,9 +20,12 @@ export const dbCheckUserCode = async (
 export const updateDevice = async (
     supabase: SupabaseClient,
     device: Partial<IDevice>,
-    device_id: string
+    device_id: string,
 ) => {
-    const { error } = await supabase.from("devices").update(device).eq("device_id", device_id);
+    const { error } = await supabase.from("devices").update(device).eq(
+        "device_id",
+        device_id,
+    );
     if (error) {
         throw error;
     }
@@ -30,15 +34,21 @@ export const updateDevice = async (
 export const addUserToDevice = async (
     supabase: SupabaseClient,
     userCode: string,
-    userId: string
+    userId: string,
 ) => {
-    const { error } = await supabase
+    const { data, error } = await supabase
         .from("devices")
         .update({ user_id: userId })
-        .eq("user_code", userCode);
+        .eq("user_code", userCode)
+        .select("*")
+        .maybeSingle();
 
     if (error) {
         return false;
+    }
+
+    if (data) {
+        await updateUser(supabase, { device_id: data.device_id }, userId);
     }
 
     return true;
@@ -46,7 +56,7 @@ export const addUserToDevice = async (
 
 export const doesUserHaveADevice = async (
     supabase: SupabaseClient,
-    userId: string
+    userId: string,
 ) => {
     const { data, error } = await supabase
         .from("devices")

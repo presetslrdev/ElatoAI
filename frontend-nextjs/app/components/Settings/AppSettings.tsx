@@ -1,9 +1,10 @@
-import { registerDevice, signOutAction } from "@/app/actions";
+
+import { connectUserToDevice, signOutAction } from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { LogOut } from "lucide-react";
-import DoctorForm from "./DoctorForm";
+
 import GeneralUserForm from "./UserForm";
 import { Slider } from "@/components/ui/slider";
 import { updateUser } from "@/db/users";
@@ -12,12 +13,6 @@ import { createClient } from "@/utils/supabase/client";
 import React, { useCallback } from "react";
 import { doesUserHaveADevice, updateDevice } from "@/db/devices";
 import { useToast } from "@/components/ui/use-toast";
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipTrigger,
-    TooltipProvider,
-  } from "@/components/ui/tooltip";
 
 interface AppSettingsProps {
     selectedUser: IUser;
@@ -35,7 +30,7 @@ const AppSettings: React.FC<AppSettingsProps> = ({
     const userFormRef = React.useRef<{ submitForm: () => void } | null>(null);
     const [deviceCode, setDeviceCode] = React.useState("");
     const [error, setError] = React.useState("");
-    
+
     const handleSave = () => {
         if (selectedUser.user_info.user_type === "doctor") {
             doctorFormRef.current?.submitForm();
@@ -49,6 +44,11 @@ const AppSettings: React.FC<AppSettingsProps> = ({
             await doesUserHaveADevice(supabase, selectedUser.user_id)
         );
     }, [selectedUser.user_id, supabase]);
+
+    React.useEffect(() => {
+        checkIfUserHasDevice();
+    }, [checkIfUserHasDevice]);
+
 
     const [volume, setVolume] = React.useState([
         selectedUser.device?.volume ?? 50,
@@ -69,7 +69,8 @@ const AppSettings: React.FC<AppSettingsProps> = ({
         debouncedUpdateVolume();
     };
 
-    const onSave = async (values: any, userType: "doctor" | "user") => {
+    const onSave = async (values: any, userType: "doctor" | "user", userId: string) => {
+
         await updateUser(
             supabase,
             {
@@ -81,29 +82,22 @@ const AppSettings: React.FC<AppSettingsProps> = ({
                     user_metadata: values,
                 },  
             },
-            selectedUser!.user_id);
-    toast({
-        description: "Your prefereces have been saved!",
-    });
-}
+            userId);
+            toast({
+                description: "Your prefereces have been saved!",
+            });
+    }
 
     return (
         <>
-            {selectedUser.user_info.user_type === "doctor" ? (
-                <DoctorForm
+            <GeneralUserForm
                     selectedUser={selectedUser}
+                    userId={selectedUser.user_id}
                     heading={heading}
                     onSave={onSave}
                     onClickCallback={() => handleSave()}
                 />
-            ) : (
-                <GeneralUserForm
-                    selectedUser={selectedUser}
-                    heading={heading}
-                    onSave={onSave}
-                    onClickCallback={() => handleSave()}
-                />
-            )}
+
             <section className="space-y-4 max-w-screen-sm mt-12">
                 <h2 className="text-lg font-semibold border-b border-gray-200 pb-2">
                     Device settings
@@ -112,18 +106,8 @@ const AppSettings: React.FC<AppSettingsProps> = ({
                 <div className="flex flex-col gap-2">
                     <div className="flex flex-row items-center gap-2">
                     <Label className="text-sm font-medium text-gray-700">
-                            Register your device
-                        </Label>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger className="inline-flex items-center justify-center h-4 w-4 rounded-full bg-gray-200 text-gray-600 text-xs hover:bg-gray-300">
-                              ?
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>For simplicity, you can register your ESP32 MAC address here. <br /> Ideally you want this to be a friendly code for your device.</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
+                    Register your device
+                    </Label>
                         <div 
                             className={`rounded-full flex-shrink-0 h-2 w-2 ${
                                 isConnected ? 'bg-green-500' : 'bg-amber-500'
@@ -131,22 +115,23 @@ const AppSettings: React.FC<AppSettingsProps> = ({
                         />    
 
                         </div>
-                        
+
                         <div className="flex flex-row items-center gap-2 mt-2">
                             <Input
                                 value={deviceCode}
                                 disabled={isConnected}
                                 onChange={(e) => setDeviceCode(e.target.value)}
-                                placeholder={isConnected ? "**********" : "Enter your ESP32-S3 MAC address"}
+                                placeholder={isConnected ? "**********" : "Enter your device code"}
+                                maxLength={100}
                             />
                             <Button
                                 size="sm"
                                 variant="outline"
                                 disabled={isConnected}
                                 onClick={async () => {
-                                    const result = await registerDevice(selectedUser.user_id, deviceCode);
-                                    if (result.error) {
-                                        setError(result.error);
+                                    const result = await connectUserToDevice(selectedUser.user_id, deviceCode);
+                                    if (!result) {
+                                        setError("Error registering device");
                                     }
                                     checkIfUserHasDevice();
                                 }}
@@ -157,10 +142,10 @@ const AppSettings: React.FC<AppSettingsProps> = ({
                         <p className="text-xs text-gray-400">
                             {isConnected ? <span className="font-medium text-gray-800">Registered!</span> :
                                 error ? <span className="text-red-500">{error}.</span> :
-                                "Add your ESP32-S3 MAC address (e.g. 12:34:56:78:9A:BC) to your account to register it."
+                                "Enter your device code to register it."
                         }
                         </p>
-                    </div>
+                </div>
                     <div className="flex flex-col gap-2 mt-2">
                         <Label className="text-sm font-medium text-gray-700">
                             Logged in as

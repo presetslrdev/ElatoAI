@@ -4,9 +4,8 @@ import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { getMacAddressFromDeviceCode, isValidMacAddress } from "@/lib/utils";
 import { addUserToDevice, dbCheckUserCode } from "@/db/devices";
-import { getSimpleUserById, updateUser } from "@/db/users";
+import { getSimpleUserById } from "@/db/users";
 
 export async function deleteUserApiKey(userId: string) {
     const supabase = createClient();
@@ -174,30 +173,3 @@ export const isPremiumUser = async (userId: string) => {
     const dbUser = await getSimpleUserById(supabase, userId);
     return dbUser?.is_premium;
 };
-
-export async function registerDevice(userId: string, deviceCode: string) {
-    // check if deviceCode is valid mac address
-    if (!isValidMacAddress(deviceCode)) {
-        return { error: "Invalid device code" };
-    }
-
-    const supabase = createClient();
-    const { data, error } = await supabase
-        .from("devices")
-        .insert({
-            user_id: userId,
-            user_code: deviceCode, // this is the device code that the user will use to register their device (friendly code preferred)
-            mac_address: deviceCode,
-        }).select();
-
-    if (error) {
-        console.log(error);
-        return { error: "Error registering device" };
-    }
-
-    if (data && data.length > 0) {
-        await updateUser(supabase, { device_id: data[0].device_id }, userId);
-    }
-
-    return { error: null };
-}

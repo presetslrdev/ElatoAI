@@ -25,12 +25,6 @@ const UserTypes: IUserType[] = [
         icon: <User />,
     },
     {
-        type: "doctor",
-        name: "Doctor",
-        title: "You are a licensed doctor or physician",
-        icon: <Hospital />,
-    },
-    {
         type: "business",
         name: "Business",
         icon: <Building2 />,
@@ -40,10 +34,9 @@ const UserTypes: IUserType[] = [
 ];
 
 const UserType: React.FC<{
-    selectedUser: IUser;
     selectedType: TUserType | null;
     onSelectType: (type: TUserType) => void;
-}> = ({ selectedType, onSelectType, selectedUser }) => {
+}> = ({ selectedType, onSelectType }) => {
     const onPickType = async (userType: IUserType) => {
         if (!userType.disabled) {
             onSelectType(userType.type);
@@ -55,7 +48,7 @@ const UserType: React.FC<{
             <h1 className="text-xl font-medium my-4 inline">
                 You are a <ArrowRight className="inline-block" />{" "}
             </h1>
-            <div className="grid grid-cols-1 md:grid-cols-3 mt-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 mt-2 gap-6">
                 {UserTypes.map((userType) => (
                     <Card
                         key={userType.type}
@@ -99,5 +92,3 @@ const UserType: React.FC<{
         </div>
     );
 };
-
-export default UserType;
