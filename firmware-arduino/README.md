@@ -79,13 +79,23 @@ This firmware turns your ESP32 device into a WebSocket audio client for Elato, e
 - If connection fails, check your WiFi signal and server details
 - Monitor serial output at 115200 baud for detailed logs
 
-## Advanced Configuration
+## Deploying and Advanced Config
 
-Edit `Config.cpp` to customize:
+1. Add your Deno and Vercel server Root CA to `config.cpp`. You can find the Root CA of vercel by running the following command and picking the Root certificate in the chain:
+
+```bash
+# vercel server root ca
+openssl s_client -showcerts -connect <your-vercel-deomain>.vercel.app:443 </dev/null
+
+# deno server root ca
+openssl s_client -showcerts -connect <your-deno-domain>.deno.dev:443 </dev/null
+```
+
+2. Edit `Config.cpp` to customize:
 - Server addresses and ports
 - Audio sample rate (default 24kHz)
 - Pin assignments for different boards
 
-For development, uncomment `#define DEV_MODE` in Config.h to use local servers without SSL.
+3. For development, uncomment `#define DEV_MODE` in Config.h to use local servers without SSL. To deploy to production, comment out `#define DEV_MODE` and set the proper server addresses and ports.
 
-To use the button, uncomment `#define TOUCH_MODE` in Config.h
+4. To use the button functions, uncomment `#define TOUCH_MODE` in Config.h

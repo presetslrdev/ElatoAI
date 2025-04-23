@@ -127,6 +127,7 @@ ElatoAI consists of three main components:
 15. **OTA Updates**: Over the Air Updates for the ESP32 firmware.
 16. **Wifi Management**: Connect to your Wifi network from the ESP32 device.
 17. **Factory Reset**: Factory reset the ESP32 device from the NextJS webapp.
+18. **Button and Touch Support**: Use the button OR touch sensor to control the ESP32 device.
 
 ## 🛠 Tech Stack
 
