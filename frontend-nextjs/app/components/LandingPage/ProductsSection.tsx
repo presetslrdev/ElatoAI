@@ -38,7 +38,7 @@ const products: Product[] = [
         description: "Create custom AI experiences with our developer-friendly kit, complete with sensors and tutorials",
         price: 45,
 		url: "/products/ai-devkit",
-        imageUrl: "/products/devkit.png",
+        imageUrl: "/products/devkit1.png",
 		features: [
 			"Flash our open source code to your device",
 			"Flexible speaker and Lipo battery options",
