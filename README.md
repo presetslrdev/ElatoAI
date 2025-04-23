@@ -128,6 +128,7 @@ ElatoAI consists of three main components:
 16. **Wifi Management**: Connect to your Wifi network from the ESP32 device.
 17. **Factory Reset**: Factory reset the ESP32 device from the NextJS webapp.
 18. **Button and Touch Support**: Use the button OR touch sensor to control the ESP32 device.
+19. **No PSRAM Required**: The ESP32 device does not require PSRAM to run the speech to speech AI.
 
 ## 🛠 Tech Stack
 
