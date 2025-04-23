@@ -25,7 +25,7 @@ https://github.com/user-attachments/assets/aa60e54c-5847-4a68-80b5-5d6b1a5b9328
 
 <img src="pcb-design.png" alt="Hardware Setup" width="100%">
 
-## Our Products
+<!-- ## Our Products
 
 | Product | Description | Price | Features |
 |---------|-------------|-------|----------|
@@ -36,7 +36,7 @@ https://github.com/user-attachments/assets/aa60e54c-5847-4a68-80b5-5d6b1a5b9328
   <a href="https://www.elatoai.com/products">
     <img src="https://img.shields.io/badge/Buy%20Now-ElatoAI%20Store-purple?style=for-the-badge" alt="Buy Now">
   </a>
-</div>
+</div> -->
 
 ## Getting Started
 
