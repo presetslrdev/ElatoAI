@@ -13,13 +13,22 @@ Realtime AI Speech powered by OpenAI Realtime API, ESP32, Secure WebSockets, and
 
 </div>
 
-## Demo Video
+## 📽️ Demo Video
 
 https://github.com/user-attachments/assets/aa60e54c-5847-4a68-80b5-5d6b1a5b9328
 
+<div align="center">
 <a href="https://www.youtube.com/watch?v=o1eIAwVll5I">
   <img src="https://img.shields.io/badge/Watch%20Demo-YouTube-red?style=for-the-badge&logo=youtube" alt="Watch Demo on YouTube">
 </a>
+
+<h3>
+
+[Homepage](https://elatoai.com/) | [Buy AI device](https://www.elatoai.com/products) | [Buy AI Dev Kit](https://www.elatoai.com/products/ai-devkit)
+
+</h3>
+
+</div>
 
 ## ⚡️ DIY Hardware Design
 
