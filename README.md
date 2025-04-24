@@ -144,7 +144,7 @@ ElatoAI consists of three main components:
 
 ## 📈 Core Use Cases
 
-We have a [Usecases.md](usecases.md) file that outlines the core use cases for the [Elato AI device](https://www.elatoai.com/products) or any other custom conversational AI device.
+We have a [Usecases.md](Usecases.md) file that outlines the core use cases for the [Elato AI device](https://www.elatoai.com/products) or any other custom conversational AI device.
 
 ## 🗺️ High-Level Flow
 
