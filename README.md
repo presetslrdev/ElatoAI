@@ -142,6 +142,9 @@ ElatoAI consists of three main components:
 | Communication   | Secure WebSockets                        |
 | Libraries       | ArduinoJson, WebSockets, AsyncWebServer, ESP32_Button, Arduino Audio Tools, ArduinoLibOpus        |
 
+## 📈 Core Use Cases
+
+We have a [Usecases.md](usecases.md) file that outlines the core use cases for the [Elato AI device](https://www.elatoai.com/products) or any other custom conversational AI device.
 
 ## 🗺️ High-Level Flow
 
