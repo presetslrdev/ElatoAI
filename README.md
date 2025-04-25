@@ -1,3 +1,5 @@
+<img src="assets/elato-alien.png" alt="Elato Logo" width="100%">
+
 # 🚀 ElatoAI: Realtime Speech AI Agents for ESP32
 
 Realtime AI Speech powered by OpenAI Realtime API, ESP32, Secure WebSockets, and Deno Edge Functions for >10-minute uninterrupted global conversations
