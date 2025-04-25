@@ -57,6 +57,13 @@ This firmware turns your ESP32 device into a WebSocket audio client for Elato, e
    - In the firmware project, set `DEV_MODE` in Config.cpp
    - Update the WebSocket server IP to your local IP address
 
+## NVS Storage
+
+We store the following data in Non-Volatile Storage (NVS) on the ESP32:
+1. **Auth token**: The supabase auth token that is used to authenticate the device with the backend server.
+2. **Factory reset**: Whether the device has been factory reset.
+3. **Wifi credentials**: The wifi credentials of the device.
+
 ## First-Time Setup
 
 1. Power on your ESP32

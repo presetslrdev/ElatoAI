@@ -112,12 +112,13 @@ wss.on("connection", async (ws: WSWebSocket, payload: IPayload) => {
         });
     }
     // send user details to client
+    // when DEV_MODE is true, we send the default values 100, false, false
     ws.send(
         JSON.stringify({
             type: "auth",
-            volume_control: user.device?.volume,
-            is_ota: user.device?.is_ota,
-            is_reset: user.device?.is_reset,
+            volume_control: user.device?.volume ?? 100,
+            is_ota: user.device?.is_ota ?? false,
+            is_reset: user.device?.is_reset ?? false,
         }),
     );
 
@@ -160,7 +161,7 @@ wss.on("connection", async (ws: WSWebSocket, payload: IPayload) => {
                     ws.send(JSON.stringify({
                         type: "server",
                         msg: "RESPONSE.COMPLETE",
-                        volume_control: device.volume,
+                        volume_control: device.volume ?? 100,
                     }));
                 } else {
                     // Fall back to just sending the complete message if there's an error

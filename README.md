@@ -44,57 +44,66 @@ Control your ESP32 AI device from your phone with the Elato AI webapp.
 |:---:|:---:|:---:|
 | *Select from a list of AI characters* | *Talk to your AI with real-time responses* | *Create personalized AI characters* |
 
-## Getting Started
+## 🚀 Quick Start
 
-1. Install [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started) and set up your Local Supabase Backend. From the root directory, run:
+1. Ensure `DEV_MODE` is set to `True` in your frontend, and server environment variables and enabled in the `Config.h` file of your firmware. This will allow you to skip the device registration process and speed your way to testing the Realtime API AI chat.
+
+2. Install [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started) and set up your Local Supabase Backend. From the root directory, run:
 ```bash
 brew install supabase/tap/supabase
 supabase start # Starts your local Supabase server with the default migrations and seed data.
 ```
 
-2. Set up your NextJS Frontend. ([See the Frontend README](frontend-nextjs/README.md)) From the `frontend-nextjs` directory, run the following commands. (**Login creds:** Email: admin@elatoai.com, Password: admin)
+3. Set up your NextJS Frontend. ([See the Frontend README](frontend-nextjs/README.md)) From the `frontend-nextjs` directory, run the following commands. (**Login creds:** Email: admin@elatoai.com, Password: admin)
 ```bash
 cd frontend-nextjs
 npm install
-
-# Set your environment variables
 cp .env.example .env.local
-# NEXT_PUBLIC_SUPABASE_ANON_KEY=<your_supabase_anon_key>
-# OPENAI_API_KEY=<your_openai_api_key>
+
+# In .env.local, set your environment variables 
+# NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-supabase-anon-key>
+# OPENAI_API_KEY=<your-openai-api-key>
 
 # Run the development server
 npm run dev
 ```
 
-3. Add your ESP32-S3 Device MAC Address to the [Settings page](http://localhost:3000/home/settings) in the NextJS Frontend. This links your device to your account.
-To find your ESP32-S3 Device's MAC Address, build and upload `test/print_mac_address_test.cpp` using PlatformIO.
-
 4. Start the Deno server. ([See the Deno server README](server-deno/README.md))
 ```bash
 # Navigate to the server directory
 cd server-deno
-
-# Set your environment variables
 cp .env.example .env
-# NEXT_PUBLIC_SUPABASE_ANON_KEY=<your_supabase_anon_key>
-# OPENAI_API_KEY=<your_openai_api_key>
+
+# In .env, set your environment variables 
+# SUPABASE_KEY=<your-supabase-anon-key>
+# OPENAI_API_KEY=<your-openai-api-key>
 
 # Run the server at port 8000
 deno run -A --env-file=.env main.ts
 ```
 
-5. Add your OpenAI API Key in the `server-deno/.env` and `frontend-nextjs/.env.local` file.
-```
-OPENAI_API_KEY=<your_openai_api_key>
-```
+5. In `Config.cpp` set `ws_server` and `backend_server` to your local IP address. Run `ifconfig` in your console and find `en0` -> `inet` -> `192.168.1.100` (it may be different for your Wifi network). This tells the ESP32 device to connect to your NextJS frontend and Deno server running on your local machine. All services should be on the same Wifi network.
 
-6. Set up your ESP32 Arduino Client. ([See the ESP32 README](firmware-arduino/README.md)) On PlatformIO, first `Build` the project, then `Upload` the project to your ESP32.
+6. Build and upload the firmware to your ESP32 device. The ESP32 should open an `ELATO-DEVICE` captive portal to connect to Wifi. Connect to it and go to `http://192.168.4.1` to configure the device wifi.
 
-7. The ESP32 should open an AP `ELATO-DEVICE` to connect to Wifi. Connect to it and go to `http://192.168.4.1` to configure the device wifi.
+7. Once your Wifi credentials are configured, turn the device off and on again and it should connect to your Wifi and your server.
 
-8. Once your Wifi is configured, turn the device off and on again and it should connect to your Wifi and the Deno edge server.
+8. Now you can talk to your AI Character!
 
-9. Now you can talk to your AI Character!
+## 📦 Getting Started with multiple devices
+
+1. Register your device by adding your ESP32 Device's MAC Address and a unique user code to the `devices` table in Supabase.
+> **Pro Tip:** To find your ESP32-S3 Device's MAC Address, build and upload `test/print_mac_address_test.cpp` using PlatformIO.
+
+
+2. Register your user account to this device by adding your unique user code to the [Settings page](http://localhost:3000/home/settings) in the NextJS Frontend. This links your device to your account.
+
+
+3. Set DEV_MODE to `False` in your frontend and server environment variables.
+> **Pro Tip:** If you're testing locally, you can enable the `DEV_MODE` macro in the `Config.h` file of your firmware to use your local IP addresses.
+
+
+4. Now you can register multiple devices to your account by repeating the process above.
 
 ## Project Architecture
 

@@ -88,6 +88,8 @@ const AppSettings: React.FC<AppSettingsProps> = ({
             });
     }
 
+    const isDevMode = process.env.DEV_MODE === "True";
+
     return (
         <>
             <GeneralUserForm
@@ -102,8 +104,9 @@ const AppSettings: React.FC<AppSettingsProps> = ({
                 <h2 className="text-lg font-semibold border-b border-gray-200 pb-2">
                     Device settings
                 </h2>
+                {isDevMode && <div className="flex flex-col text-purple-500 text-xs gap-2">You don't need to register your device because you're in dev mode.</div>}
                 <div className="flex flex-col gap-6">
-                {process.env.DEV_MODE != "True" && <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2">
                     <div className="flex flex-row items-center gap-2">
                     <Label className="text-sm font-medium text-gray-700">
                     Register your device
@@ -119,7 +122,7 @@ const AppSettings: React.FC<AppSettingsProps> = ({
                         <div className="flex flex-row items-center gap-2 mt-2">
                             <Input
                                 value={deviceCode}
-                                disabled={isConnected}
+                                disabled={isConnected || isDevMode}
                                 onChange={(e) => setDeviceCode(e.target.value)}
                                 placeholder={isConnected ? "**********" : "Enter your device code"}
                                 maxLength={100}
@@ -127,7 +130,7 @@ const AppSettings: React.FC<AppSettingsProps> = ({
                             <Button
                                 size="sm"
                                 variant="outline"
-                                disabled={isConnected}
+                                disabled={isConnected || isDevMode}
                                 onClick={async () => {
                                     const result = await connectUserToDevice(selectedUser.user_id, deviceCode);
                                     if (!result) {
@@ -145,7 +148,7 @@ const AppSettings: React.FC<AppSettingsProps> = ({
                                 "Enter your device code to register it."
                         }
                         </p>
-                </div>}
+                </div>
                     <div className="flex flex-col gap-2 mt-2">
                         <Label className="text-sm font-medium text-gray-700">
                             Logged in as
