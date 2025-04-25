@@ -46,15 +46,13 @@ Control your ESP32 AI device from your phone with the Elato AI webapp.
 
 ## 🚀 Quick Start
 
-1. Ensure `DEV_MODE` is set to `True` in your frontend, and server environment variables and enabled in the `Config.h` file of your firmware. This will allow you to skip the device registration process and get you up and running with the Realtime API AI chat.
-
-2. Install [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started) and set up your Local Supabase Backend. From the root directory, run:
+1. Install [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started) and set up your Local Supabase Backend. From the root directory, run:
 ```bash
 brew install supabase/tap/supabase
 supabase start # Starts your local Supabase server with the default migrations and seed data.
 ```
 
-3. Set up your NextJS Frontend. ([See the Frontend README](frontend-nextjs/README.md)) From the `frontend-nextjs` directory, run the following commands. (**Login creds:** Email: admin@elatoai.com, Password: `admin`)
+2. Set up your NextJS Frontend. ([See the Frontend README](frontend-nextjs/README.md)) From the `frontend-nextjs` directory, run the following commands. (**Login creds:** Email: admin@elatoai.com, Password: `admin`)
 ```bash
 cd frontend-nextjs
 npm install
@@ -68,7 +66,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-4. Start the Deno server. ([See the Deno server README](server-deno/README.md))
+3. Start the Deno server. ([See the Deno server README](server-deno/README.md))
 ```bash
 # Navigate to the server directory
 cd server-deno
@@ -82,13 +80,13 @@ cp .env.example .env
 deno run -A --env-file=.env main.ts
 ```
 
-5. In `Config.cpp` set `ws_server` and `backend_server` to your local IP address. Run `ifconfig` in your console and find `en0` -> `inet` -> `192.168.1.100` (it may be different for your Wifi network). This tells the ESP32 device to connect to your NextJS frontend and Deno server running on your local machine. All services should be on the same Wifi network.
+4. In `Config.cpp` set `ws_server` and `backend_server` to your local IP address. Run `ifconfig` in your console and find `en0` -> `inet` -> `192.168.1.100` (it may be different for your Wifi network). This tells the ESP32 device to connect to your NextJS frontend and Deno server running on your local machine. All services should be on the same Wifi network.
 
-6. Build and upload the firmware to your ESP32 device. The ESP32 should open an `ELATO-DEVICE` captive portal to connect to Wifi. Connect to it and go to `http://192.168.4.1` to configure the device wifi.
+5. Build and upload the firmware to your ESP32 device. The ESP32 should open an `ELATO-DEVICE` captive portal to connect to Wifi. Connect to it and go to `http://192.168.4.1` to configure the device wifi.
 
-7. Once your Wifi credentials are configured, turn the device off and on again and it should connect to your Wifi and your server.
+6. Once your Wifi credentials are configured, turn the device off and on again and it should connect to your Wifi and your server.
 
-8. Now you can talk to your AI Character!
+7. Now you can talk to your AI Character!
 
 ## 📦 Getting Started with multiple devices
 

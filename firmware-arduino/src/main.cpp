@@ -160,7 +160,7 @@ void touchTask(void* parameter) {
 
 
 void setupDeviceMetadata() {
-    // factoryResetDevice();
+    factoryResetDevice();
     deviceState = IDLE;
 
     getAuthTokenFromNVS();
