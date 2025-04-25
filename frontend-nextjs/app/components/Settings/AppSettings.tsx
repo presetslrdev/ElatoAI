@@ -1,3 +1,4 @@
+"use client";
 
 import { connectUserToDevice, signOutAction } from "@/app/actions";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,9 @@ interface AppSettingsProps {
     selectedUser: IUser;
     heading: React.ReactNode;
 }
+
+const skipDeviceRegistration = process.env.NEXT_PUBLIC_SKIP_DEVICE_REGISTRATION === "True";
+
 
 const AppSettings: React.FC<AppSettingsProps> = ({
     selectedUser,
@@ -88,8 +92,6 @@ const AppSettings: React.FC<AppSettingsProps> = ({
             });
     }
 
-    const skipDeviceRegistration = process.env.SKIP_DEVICE_REGISTRATION === "True";
-
     return (
         <>
             <GeneralUserForm
@@ -100,7 +102,7 @@ const AppSettings: React.FC<AppSettingsProps> = ({
                     onClickCallback={() => handleSave()}
                 />
 
-            <section className="space-y-4 max-w-screen-sm mt-12">
+            <div className="space-y-4 max-w-screen-sm mt-12">
                 <h2 className="text-lg font-semibold border-b border-gray-200 pb-2">
                     Device settings
                 </h2>
@@ -195,7 +197,7 @@ const AppSettings: React.FC<AppSettingsProps> = ({
                             </Button>
                         </form>
                 </div>
-            </section>
+            </div>
         </>
     );
 };

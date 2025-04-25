@@ -3,7 +3,8 @@ import jwt from "jsonwebtoken";
 import { createClient } from "@/utils/supabase/server";
 
 const ALGORITHM = "HS256";
-const skipDeviceRegistration = process.env.SKIP_DEVICE_REGISTRATION === "True";
+const skipDeviceRegistration =
+    process.env.NEXT_PUBLIC_SKIP_DEVICE_REGISTRATION === "True";
 
 interface TokenPayload {
     [key: string]: any;
@@ -71,13 +72,13 @@ export async function GET(req: Request) {
         }
 
         /**
-         * If `SKIP_DEVICE_REGISTRATION` is true, we use the default dev user.
+         * If `NEXT_PUBLIC_SKIP_DEVICE_REGISTRATION` is true, we use the default dev user.
          * Otherwise, we use the user by given by the mac address.
          *
          * Steps to register your device:
          * 1: Register the device `mac_address` and `user_code` in the `devices` tables.
          * 2: Make sure the user adds the `user_code` to their account in Settings to link the device to their `user_id`.
-         * 3: When `SKIP_DEVICE_REGISTRATION` is false, we then fetch the user by `mac_address`.
+         * 3: When `NEXT_PUBLIC_SKIP_DEVICE_REGISTRATION` is false, we then fetch the user by `mac_address`.
          */
         let user;
         if (skipDeviceRegistration) {

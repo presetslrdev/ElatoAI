@@ -12,7 +12,7 @@ import { fetchGithubStars } from "./actions";
 
 export default async function LandingPage() {
   const supabase = createClient();
-  const { stars } = await fetchGithubStars("akdeb/ElatoAI");
+  const { stars = 0 } = await fetchGithubStars("akdeb/ElatoAI");
 
   const allPersonalities = await getAllPersonalities(supabase);
   const adultPersonalities = allPersonalities.filter((personality) => !personality.is_story && !personality.is_child_voice);
