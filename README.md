@@ -46,7 +46,7 @@ Control your ESP32 AI device from your phone with the Elato AI webapp.
 
 ## 🚀 Quick Start
 
-1. Ensure `DEV_MODE` is set to `True` in your frontend, and server environment variables and enabled in the `Config.h` file of your firmware. This will allow you to skip the device registration process and speed your way to testing the Realtime API AI chat.
+1. Ensure `DEV_MODE` is set to `True` in your frontend, and server environment variables and enabled in the `Config.h` file of your firmware. This will allow you to skip the device registration process and get you up and running with the Realtime API AI chat.
 
 2. Install [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started) and set up your Local Supabase Backend. From the root directory, run:
 ```bash
@@ -54,7 +54,7 @@ brew install supabase/tap/supabase
 supabase start # Starts your local Supabase server with the default migrations and seed data.
 ```
 
-3. Set up your NextJS Frontend. ([See the Frontend README](frontend-nextjs/README.md)) From the `frontend-nextjs` directory, run the following commands. (**Login creds:** Email: admin@elatoai.com, Password: admin)
+3. Set up your NextJS Frontend. ([See the Frontend README](frontend-nextjs/README.md)) From the `frontend-nextjs` directory, run the following commands. (**Login creds:** Email: admin@elatoai.com, Password: `admin`)
 ```bash
 cd frontend-nextjs
 npm install
@@ -93,14 +93,15 @@ deno run -A --env-file=.env main.ts
 ## 📦 Getting Started with multiple devices
 
 1. Register your device by adding your ESP32 Device's MAC Address and a unique user code to the `devices` table in Supabase.
-> **Pro Tip:** To find your ESP32-S3 Device's MAC Address, build and upload `test/print_mac_address_test.cpp` using PlatformIO.
+> **Pro Tip:** To find your ESP32-S3 Device's MAC Address, build and upload `test/print_mac_address_test.cpp` using PlatformIO and view the serial monitor.
 
 
 2. Register your user account to this device by adding your unique user code to the [Settings page](http://localhost:3000/home/settings) in the NextJS Frontend. This links your device to your account.
 
 
-3. Set DEV_MODE to `False` in your frontend and server environment variables.
-> **Pro Tip:** If you're testing locally, you can enable the `DEV_MODE` macro in the `Config.h` file of your firmware to use your local IP addresses.
+3. Set DEV_MODE to `False` in your `frontend-nextjs/.env.local` env variable.
+
+> **Pro Tip:** If you're testing locally, you can keep enabled the `DEV_MODE` macro in the `Config.h` file of your firmware and the Deno server env variable to use your local IP addresses for testing.
 
 
 4. Now you can register multiple devices to your account by repeating the process above.
