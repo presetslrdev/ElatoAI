@@ -40,9 +40,13 @@ https://github.com/user-attachments/assets/aa60e54c-5847-4a68-80b5-5d6b1a5b9328
 
 Control your ESP32 AI device from your phone with the Elato AI webapp.
 
-| ![Screenshot 1](assets/playground.png) | ![Screenshot 2](assets/ai-voice.png) | ![Screenshot 3](assets/create-ai.png) |
-|:---:|:---:|:---:|
-| *Select from a list of AI characters* | *Talk to your AI with real-time responses* | *Create personalized AI characters* |
+<img src="assets/mockups.png" alt="App Screenshots" width="100%">
+
+<div style="display: flex; width: 100%;">
+  <div style="flex: 1; text-align: center;">Select from a list of AI characters</div>
+  <div style="flex: 1; text-align: center;">Talk to your AI with real-time responses</div>
+  <div style="flex: 1; text-align: center;">Create personalized AI characters</div>
+</div>
 
 ## 🚀 Quick Start
 
