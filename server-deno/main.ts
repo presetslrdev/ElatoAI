@@ -39,7 +39,7 @@ import { SupabaseClient } from "@supabase/supabase-js";
 
 import { Encoder } from "@evan/opus";
 
-const isDev = Deno.env.get("DEV_MODE") === "true";
+const isDev = Deno.env.get("DEV_MODE") === "True";
 
 // Define your audio parameters
 const SAMPLE_RATE = 24000; // For example, 24000 Hz

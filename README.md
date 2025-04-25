@@ -1,4 +1,4 @@
-# 🚀 ElatoAI: Realtime AI Speech for ESP32
+# 🚀 ElatoAI: Realtime Speech AI Agents for ESP32
 
 Realtime AI Speech powered by OpenAI Realtime API, ESP32, Secure WebSockets, and Deno Edge Functions for >10-minute uninterrupted global conversations
 
@@ -32,20 +32,29 @@ https://github.com/user-attachments/assets/aa60e54c-5847-4a68-80b5-5d6b1a5b9328
 
 ## ⚡️ DIY Hardware Design
 
-<img src="pcb-design.png" alt="Hardware Setup" width="100%">
+<img src="assets/pcb-design.png" alt="Hardware Setup" width="100%">
 
-<!-- ## Our Products
+## 📱 App Design
 
-| Product | Description | Price | Features |
-|---------|-------------|-------|----------|
-| <img src="elato-ai-device.jpeg" alt="Elato AI Device" width="150"><br>**[Elato AI Device](https://www.elatoai.com/products)** | Transform any toy into an AI companion with any voice and personality with  OpenAI Realtime API | **$55** | • Works with any toy or plushie<br>• Create unlimited AI characters<br>• Easy to set up in minutes |
-| <img src="elato-ai-devkit.png" alt="Elato AI Dev Kit" width="150"><br>**[Elato AI Dev Kit](https://www.elatoai.com/products/ai-devkit)** | Create custom speech-to-speech agentic AI experiences for developers | **$45** | • Flash our open source code to your device<br>• Flexible speaker and Lipo battery options<br>• Set your own voice and personality<br>• Attach a custom case |
+Control your ESP32 AI device from your phone with the Elato AI webapp.
 
 <div align="center">
-  <a href="https://www.elatoai.com/products">
-    <img src="https://img.shields.io/badge/Buy%20Now-ElatoAI%20Store-purple?style=for-the-badge" alt="Buy Now">
-  </a>
-</div> -->
+  <div style="display: flex; justify-content: space-between;">
+    <div style="text-align: center; width: 33%;">
+      <img src="assets/playground.png" alt="Mobile App Screenshot 1" width="100%" />
+      <p><em>Select from a list of personalized AI characters</em></p>
+    </div>
+    <div style="text-align: center; width: 31%;">
+      <img src="assets/ai-voice.png" alt="Mobile App Screenshot 2" width="100%" />
+      <p><em>Talk to your AI with real-time responses</em></p>
+    </div>
+    <div style="text-align: center; width: 32%;">
+      <img src="assets/create-ai.png" alt="Mobile App Screenshot 3" width="100%" />
+      <p><em>Create personalized AI characters</em></p>
+    </div>
+  </div>
+</div>
+
 
 ## Getting Started
 
@@ -119,16 +128,17 @@ ElatoAI consists of three main components:
 7. **Global Edge Performance**: Low latency Deno Edge Functions ensuring seamless global conversations.
 8. **ESP32 Arduino Framework**: Optimized and easy-to-use hardware integration.
 9. **Conversation History**: View your conversation history.
-10. **Device Management**: Register and manage your devices.
+10. **Device Management and Authentication**: Register and manage your devices.
 11. **User Authentication**: Secure user authentication and authorization.
 12. **Conversations with WebRTC and Websockets**: Talk to your AI with WebRTC on the NextJS webapp and with websockets on the ESP32.
 13. **Volume Control**: Control the volume of the ESP32 speaker from the NextJS webapp.
 14. **Realtime Transcripts**: The realtime transcripts of your conversations are stored in the Supabase DB.
 15. **OTA Updates**: Over the Air Updates for the ESP32 firmware.
-16. **Wifi Management**: Connect to your Wifi network from the ESP32 device.
+16. **Wifi Management with captive portal**: Connect to your Wifi network from the ESP32 device.
 17. **Factory Reset**: Factory reset the ESP32 device from the NextJS webapp.
 18. **Button and Touch Support**: Use the button OR touch sensor to control the ESP32 device.
 19. **No PSRAM Required**: The ESP32 device does not require PSRAM to run the speech to speech AI.
+20. **OAuth for Web client**: OAuth for your users to manage their AI characters and devices.
 
 ## 🛠 Tech Stack
 

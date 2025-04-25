@@ -1,6 +1,6 @@
 # [WIP] Here are some use cases for the Elato AI device
 
-<img src="./usecases.png" alt="Build Custom AI Toys" width="40%">
+<img src="./assets/usecases.png" alt="Build Custom AI Toys" width="40%">
 
 *Cute AI plush toys for kids, elderly, and more!*
 

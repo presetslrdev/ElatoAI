@@ -14,12 +14,12 @@ interface PersonalityFiltersProps {
 const PersonalityFilters = ({
     setSelectedFilters,
     selectedFilters,
-    languageState,
     currentUser,
 }: PersonalityFiltersProps) => {
     const isDoctor = currentUser.user_info?.user_type === "doctor";
 
     return (
+        <div className="overflow-x-auto scrollbar-hide">
         <ToggleGroup
             type="multiple"
             variant="outline"
@@ -28,7 +28,7 @@ const PersonalityFilters = ({
             onValueChange={(value: string[]) => {
                 setSelectedFilters(value as PersonalityFilter[]);
             }}
-            className="justify-start mb-4 text-xs mt-2"
+            className="justify-start mb-4 ml-1 text-xs inline-flex flex-nowrap min-w-max"
         >
             <ToggleGroupItem
                 value="is_story"
@@ -67,6 +67,7 @@ const PersonalityFilters = ({
             )}
              
         </ToggleGroup>
+    </div>
     );
 };
 

@@ -103,7 +103,7 @@ const AppSettings: React.FC<AppSettingsProps> = ({
                     Device settings
                 </h2>
                 <div className="flex flex-col gap-6">
-                <div className="flex flex-col gap-2">
+                {process.env.DEV_MODE != "True" && <div className="flex flex-col gap-2">
                     <div className="flex flex-row items-center gap-2">
                     <Label className="text-sm font-medium text-gray-700">
                     Register your device
@@ -145,7 +145,7 @@ const AppSettings: React.FC<AppSettingsProps> = ({
                                 "Enter your device code to register it."
                         }
                         </p>
-                </div>
+                </div>}
                     <div className="flex flex-col gap-2 mt-2">
                         <Label className="text-sm font-medium text-gray-700">
                             Logged in as

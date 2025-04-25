@@ -120,7 +120,7 @@ function App({ personalityIdState, isDoctor, userId }: AppProps) {
       logClientEvent(data, "error.no_ephemeral_key");
       setSessionStatus("DISCONNECTED");
       toast({
-        description: "Your API key is likely invalid. Please update it in Settings.",
+        description: "Your API key is likely invalid. Please add it to your env variables.",
       });
       return null;
     }
