@@ -106,7 +106,7 @@ const AppSettings: React.FC<AppSettingsProps> = ({
                 <h2 className="text-lg font-semibold border-b border-gray-200 pb-2">
                     Device settings
                 </h2>
-                {skipDeviceRegistration && <div className="flex flex-col text-purple-500 text-xs gap-2">You don't need to register your device because you're in dev mode.</div>}
+                {skipDeviceRegistration && <div className="flex flex-col text-purple-500 text-xs gap-2">You don't need to register your device because NEXT_PUBLIC_SKIP_DEVICE_REGISTRATION is set to True.</div>}
                 <div className="flex flex-col gap-6">
                 <div className="flex flex-col gap-2">
                     <div className="flex flex-row items-center gap-2">

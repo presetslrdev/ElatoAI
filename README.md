@@ -45,7 +45,13 @@ Control your ESP32 AI device from your phone with the Elato AI webapp.
 | Select from a list of AI characters | Talk to your AI with real-time responses | Create personalized AI characters |
 |:--:|:--:|:--:|
 
+
 ## 🚀 Quick Start
+
+<a href="https://www.youtube.com/watch?v=bXrNRpGOJWw">
+  <img src="https://img.shields.io/badge/Quickstart%20Tutorial-YouTube-yellow?style=for-the-badge&logo=youtube" alt="Watch Demo on YouTube">
+</a>
+
 
 1. **Start Supabase**
 
