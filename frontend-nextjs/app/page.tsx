@@ -9,6 +9,7 @@ import { CreateCharacterShowcase } from "./components/LandingPage/CreateCharacte
 import ProductsSection from "./components/LandingPage/ProductsSection";
 import Image from "next/image";
 import { fetchGithubStars } from "./actions";
+import YoutubeDemo from "./components/LandingPage/YoutubeDemo";
 
 export default async function LandingPage() {
   const supabase = createClient();
@@ -114,7 +115,7 @@ export default async function LandingPage() {
             </div>
           </div>
         </section>
-
+        <YoutubeDemo caption="Elato AI ESP32-S3 Demo" />
         {/* Products Section */}
         <ProductsSection />
 
