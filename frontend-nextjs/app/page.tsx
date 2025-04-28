@@ -36,6 +36,13 @@ export default async function LandingPage() {
                   Attach your <span className="font-silkscreen mx-1">Elato</span> device to any toy or plushie and watch them become AI characters you can talk
                   to!
                 </p>
+                <div className="flex items-center space-x-2 justify-center text-amber-500 my-2">
+        {[...Array(5)].map((_, i) => (
+          <Star key={i} className="fill-amber-500" />
+        ))}
+        <span className="ml-2 text-gray-700">200+ Happy Customers</span>
+      </div>
+
 
                 <div className="flex flex-col gap-4  sm:gap-8 pt-4">
                   <div className="flex flex-col sm:flex-row gap-3">
