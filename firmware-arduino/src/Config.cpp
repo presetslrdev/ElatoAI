@@ -36,11 +36,11 @@ const uint16_t backend_port = 3000;
 
 #else
 // PROD
-const char *ws_server = "talkedge.deno.dev";
+const char *ws_server = "<your-edge-server>.deno.dev";
 const uint16_t ws_port = 443;
 const char *ws_path = "/";
 // Backend server details 
-const char *backend_server = "www.elatoai.com";
+const char *backend_server = "<your-backend-server-url>"; // like www.facebook.com or facebook.vercel.app
 const uint16_t backend_port = 3000;
 
 #endif
@@ -74,6 +74,7 @@ const gpio_num_t BUTTON_PIN = GPIO_NUM_2; // Only RTC IO are allowed - ESP32 Pin
 
 #endif
 
+// add the CA cert for your backend server here `backend_server`
 const char *Vercel_CA_cert = R"EOF(
 -----BEGIN CERTIFICATE-----
 <YOUR VERCEL CERTIFICATE HERE>
@@ -88,6 +89,7 @@ const char *Vercel_CA_cert = R"EOF(
 // )EOF";
 
 // Deno Edge Functions CA cert
+// add the CA cert for your edge server here `ws_server`
 const char *CA_cert = R"EOF(
 -----BEGIN CERTIFICATE-----
 <YOUR TALKEDGE CERTIFICATE HERE>
