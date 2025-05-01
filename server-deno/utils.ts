@@ -13,11 +13,8 @@ export const authenticateUser = async (
 
         if (!jwtSecret) throw new Error("JWT_SECRET_KEY not configured");
 
-        console.log("jwtSecret", jwtSecret);
         const secretBytes = new TextEncoder().encode(jwtSecret);
-        console.log("secretBytes", secretBytes);
         const payload = await jose.jwtVerify(authToken, secretBytes);
-        console.log("payload", payload);
 
         const { payload: { email } } = payload;
         const user = await getUserByEmail(supabaseClient, email as string);
