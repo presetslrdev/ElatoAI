@@ -170,7 +170,7 @@ ElatoAI consists of three main components:
 
 We have a [Usecases.md](Usecases.md) file that outlines the core use cases for the [Elato AI device](https://www.elatoai.com/products) or any other custom conversational AI device.
 
-## 🗺️ High-Level Flow
+## High-Level Flowchart
 
 ```mermaid
 flowchart TD
@@ -206,7 +206,7 @@ graph TD
   esp32 --> ESPAsyncWebServer[ESPAsyncWebServer]
 ```
 
-## ⚙️ PlatformIO Configuration
+## ⚙️ PlatformIO Config
 
 ```ini
 [env:esp32-s3-devkitc-1]
