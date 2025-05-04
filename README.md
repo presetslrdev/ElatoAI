@@ -18,11 +18,11 @@ Realtime AI Speech powered by OpenAI Realtime API, ESP32, Secure WebSockets, and
 ## 📽️ Demo Video
 
 <div align="center">
-  <a href="https://www.youtube.com/watch?v=o1eIAwVll5I" target="_blank">
-    <img src="https://img.youtube.com/vi/o1eIAwVll5I/maxresdefault.jpg" alt="Elato AI Demo Video" width="100%" />
+    <a href="https://www.youtube.com/watch?v=o1eIAwVll5I" target="_blank">
+    <img src="https://img.youtube.com/vi/o1eIAwVll5I/maxresdefault.jpg" alt="Elato AI Demo Video" width="100%" style="border-radius:10px" />
+    <br>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/120px-YouTube_full-color_icon_%282017%29.svg.png" width="60" style="margin-top:-187px; margin-bottom:147px;" alt="Play Video" />
   </a>
-
-
 <h3>
 
 [Homepage](https://elatoai.com/) | [Buy AI device](https://www.elatoai.com/products) | [Buy AI Dev Kit](https://www.elatoai.com/products/ai-devkit)
