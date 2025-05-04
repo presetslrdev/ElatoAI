@@ -227,8 +227,8 @@ lib_deps =
 
 ## 📊 Important Stats
 
-- ⚡️ **Latency**: <1s round-trip globally
-- 🎧 **Audio Quality**: Opus codec at 24kbps (high clarity)
+- ⚡️ **Latency**: <2s round-trip globally
+- 🎧 **Audio Quality**: Opus codec at 12kbps (high clarity)
 - ⏳ **Uninterrupted Conversations**: Up to 10 minutes continuous conversations
 - 🌎 **Global Availability**: Optimized with edge computing with Deno
 
