@@ -174,12 +174,17 @@ We have a [Usecases.md](Usecases.md) file that outlines the core use cases for t
 
 ```mermaid
 flowchart TD
-  User[User Speech] --> ESP32
+  subgraph UserLayer
+    UserInput[User Speech Input]
+    UserOutput[AI Generated Speech Output]
+  end
+  
+  UserInput --> ESP32
   ESP32[ESP32 Device] -->|WebSocket| Edge[Deno Edge Function]
   Edge -->|OpenAI API| OpenAI[OpenAI Realtime API]
   OpenAI --> Edge
   Edge -->|WebSocket| ESP32
-  ESP32 --> User[AI Generated Speech]
+  ESP32 --> UserOutput
 ```
 
 
