@@ -80,6 +80,8 @@ We store the following data in Non-Volatile Storage (NVS) on the ESP32:
    - Blue 🔵: Device is speaking
    - Yellow 🟡: Device is listening to user
    - Red 🔴: Processing user request 
+   - Cyan 🩵: OTA in progress
+   - Magenta 🩷: Soft AP mode
 
 ## Troubleshooting
 
