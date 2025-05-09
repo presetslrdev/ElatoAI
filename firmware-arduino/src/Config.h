@@ -23,6 +23,7 @@ extern OtaStatus otaState;
 enum DeviceState
 {
     SETUP,
+    SOFT_AP,
     IDLE,
     LISTENING,
     SPEAKING,
