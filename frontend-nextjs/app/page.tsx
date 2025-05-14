@@ -46,7 +46,7 @@ export default async function LandingPage() {
 
                 <div className="flex flex-col gap-4  sm:gap-8 pt-4">
                   <div className="flex flex-col sm:flex-row gap-3">
-                    <Link href={"/products"}>
+                    <Link href={"https://elatoai.com/products"}>
                       <Button
                         size="lg"
                         className="w-full sm:w-auto flex-row items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-500 text-white border-0 text-lg h-14"
@@ -213,7 +213,7 @@ export default async function LandingPage() {
                 </div>
 
                 <Button size="lg" className="bg-white text-purple-600 hover:bg-purple-50 text-lg h-14 px-8">
-                  <Link href={"/products"}>Buy Now</Link>
+                  <Link href={"https://elatoai.com/products"}>Buy Now</Link>
                 </Button>
               </div>
             </div>

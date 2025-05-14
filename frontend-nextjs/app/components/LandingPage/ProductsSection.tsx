@@ -23,7 +23,7 @@ const products: Product[] = [
         name: "Elato AI Device",
         description: "Transform any toy into an AI companion with any voice and personality with our advanced conversational AI",
         price: 55,
-		url: "/products",
+		url: "https://elatoai.com/products",
         imageUrl: "/products/device1.jpeg",
 		features: [
 			"Works with any toy or plushie",
@@ -36,8 +36,8 @@ const products: Product[] = [
         id: "2",
         name: "Elato AI Dev Kit",
         description: "Create custom AI experiences with our developer-friendly kit, complete with sensors and tutorials",
-        price: 45,
-		url: "/products/ai-devkit",
+        price: 65,
+		url: "https://elatoai.com/products/ai-devkit",
         imageUrl: "/products/devkit1.png",
 		features: [
 			"Flash our open source code to your device",
