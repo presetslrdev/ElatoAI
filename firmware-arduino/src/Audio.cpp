@@ -72,7 +72,7 @@ void transitionToSpeaking() {
     
     if (xSemaphoreTake(wsMutex, pdMS_TO_TICKS(100)) == pdTRUE) {
         deviceState = SPEAKING;
-        digitalWrite(10, HIGH);
+        digitalWrite(I2S_SD_OUT, HIGH);
         speakingStartTime = millis();
         
         webSocket.enableHeartbeat(30000, 15000, 3);
@@ -98,7 +98,7 @@ void transitionToListening() {
 
     if (xSemaphoreTake(wsMutex, pdMS_TO_TICKS(100)) == pdTRUE) {
         deviceState = LISTENING;
-        digitalWrite(10, LOW);
+        digitalWrite(I2S_SD_OUT, LOW);
         webSocket.disableHeartbeat();
         xSemaphoreGive(wsMutex);
     }
@@ -107,7 +107,7 @@ void transitionToListening() {
 void audioStreamTask(void *parameter) {
     Serial.println("Starting I2S stream pipeline...");
     
-    pinMode(10, OUTPUT);
+    pinMode(I2S_SD_OUT, OUTPUT);
 
     OpusSettings cfg;
     cfg.sample_rate = SAMPLE_RATE;
