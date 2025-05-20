@@ -4,7 +4,7 @@ This firmware turns your ESP32 device into a WebSocket audio client for Elato, e
 
 ## Hardware Setup
 
-<img src="../pcb-design.png" alt="Hardware Setup" width="100%">
+<img src="../assets/pcb-design.png" alt="Hardware Setup" width="100%">
 
 ### Components Needed
 - ESP32-S3 board
