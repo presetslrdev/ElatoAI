@@ -49,8 +49,13 @@ Control your ESP32 AI device from your phone with the Elato AI webapp.
   <img src="https://img.shields.io/badge/Quickstart%20Tutorial-YouTube-yellow?style=for-the-badge&logo=youtube" alt="Watch Demo on YouTube">
 </a>
 
+1. **Clone the repository**
 
-1. **Start Supabase**
+```bash
+git clone git@github.com:akdeb/ElatoAI.git
+```
+
+2. **Start Supabase**
 
 Install [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started) and set up your Local Supabase Backend. From the root directory, run:
 ```bash
@@ -58,7 +63,7 @@ brew install supabase/tap/supabase
 supabase start # Starts your local Supabase server with the default migrations and seed data.
 ```
 
-2. **Set up your NextJS Frontend**
+3. **Set up your NextJS Frontend**
 
 ([See the Frontend README](frontend-nextjs/README.md)) 
 
@@ -76,7 +81,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-3. **Start the Deno server**
+4. **Start the Deno server**
 
 ([See the Deno server README](server-deno/README.md))
 ```bash
@@ -92,21 +97,21 @@ cp .env.example .env
 deno run -A --env-file=.env main.ts
 ```
 
-4. **Setup the ESP32 Device firmware**
+5. **Setup the ESP32 Device firmware**
 
 ([See the ESP32 Device README](firmware-arduino/README.md))
 
 In `Config.cpp` set `ws_server` and `backend_server` to your local IP address. Run `ifconfig` in your console and find `en0` -> `inet` -> `192.168.1.100` (it may be different for your Wifi network). This tells the ESP32 device to connect to your NextJS frontend and Deno server running on your local machine. All services should be on the same Wifi network.
 
-5. **Setup the ESP32 Device Wifi**
+6. **Setup the ESP32 Device Wifi**
 
 Build and upload the firmware to your ESP32 device. The ESP32 should open an `ELATO-DEVICE` captive portal to connect to Wifi. Connect to it and go to `http://192.168.4.1` to configure the device wifi.
 
-6. Once your Wifi credentials are configured, turn the device off and on again and it should connect to your Wifi and your server.
+7. Once your Wifi credentials are configured, turn the device off and on again and it should connect to your Wifi and your server.
 
-7. Now you can talk to your AI Character!
+8. Now you can talk to your AI Character!
 
-## 📦 Getting Started with multiple devices
+## 🤖🤖🤖 Getting Started with multiple devices
 
 1. Register your device by adding your ESP32 Device's MAC Address and a unique user code to the `devices` table in Supabase.
 > **Pro Tip:** To find your ESP32-S3 Device's MAC Address, build and upload `test/print_mac_address_test.cpp` using PlatformIO and view the serial monitor.
