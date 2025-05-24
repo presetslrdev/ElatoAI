@@ -13,7 +13,7 @@ extern TaskHandle_t speakerTaskHandle;
 extern TaskHandle_t micTaskHandle;
 extern TaskHandle_t networkTaskHandle;
 
-extern bool scheduleListeningRestart;
+extern volatile bool scheduleListeningRestart;
 extern unsigned long scheduledTime;
 extern unsigned long speakingStartTime;
 
@@ -31,10 +31,12 @@ extern VolumeStream volume;
 extern QueueStream<uint8_t> queue;
 extern StreamCopy copier;
 extern AudioInfo info;
+extern volatile bool outputFlushScheduled;
 
 // AUDIO INPUT
 extern I2SStream i2sInput;
 extern StreamCopy micToWsCopier;
+extern volatile bool i2sInputFlushScheduled;
 
 // WEBSOCKET
 void webSocketEvent(WStype_t type, uint8_t *payload, size_t length);

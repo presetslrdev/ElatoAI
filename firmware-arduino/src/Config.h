@@ -44,10 +44,11 @@ enum DeviceState
     PROCESSING,
     WAITING,
     OTA,
-    FACTORY_RESET
+    FACTORY_RESET,
+    SLEEP
 };
 
-extern DeviceState deviceState;
+extern volatile DeviceState deviceState;
 
 // WiFi credentials
 extern const char *EAP_IDENTITY;

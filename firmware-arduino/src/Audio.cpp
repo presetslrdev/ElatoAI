@@ -17,7 +17,7 @@ TaskHandle_t micTaskHandle = NULL;
 TaskHandle_t networkTaskHandle = NULL;
 
 // TIMING REGISTERS
-bool scheduleListeningRestart = false;
+volatile bool scheduleListeningRestart = false;
 unsigned long scheduledTime = 0;
 unsigned long speakingStartTime = 0;
 
@@ -31,18 +31,20 @@ class BufferPrint : public Print {
 public:
   BufferPrint(BufferRTOS<uint8_t>& buf) : _buffer(buf) {}
 
+  // networkTask -> webSocket.loop() -> webSocketEvent(WStype_BIN, ...) -> opusDecoder.write() -> bufferPrint.write()
   virtual size_t write(uint8_t data) override {
     if (webSocket.isConnected() && deviceState == SPEAKING) {
         return _buffer.writeArray(&data, 1);
     }
-    return 0;
+    return 1; //let opusDecoder write, otherwise thread will stuck
   }
 
+  // networkTask -> webSocket.loop() -> webSocketEvent(WStype_BIN, ...) -> opusDecoder.write() -> bufferPrint.write()
   virtual size_t write(const uint8_t *buffer, size_t size) override {
     if (webSocket.isConnected() && deviceState == SPEAKING) {
         return _buffer.writeArray(buffer, size);
     }
-    return 0;
+    return size; //let opusDecoder write, otherwise thread will stuck
   }
 
 private:
@@ -50,13 +52,14 @@ private:
 };
 
 BufferPrint bufferPrint(audioBuffer);
-OpusAudioDecoder opusDecoder;
-BufferRTOS<uint8_t> audioBuffer(AUDIO_BUFFER_SIZE, AUDIO_CHUNK_SIZE);
-I2SStream i2s; 
-VolumeStream volume(i2s);
-QueueStream<uint8_t> queue(audioBuffer);
+OpusAudioDecoder opusDecoder;  //access guarded by wsmutex
+BufferRTOS<uint8_t> audioBuffer(AUDIO_BUFFER_SIZE, AUDIO_CHUNK_SIZE);  //producer: networkTask, consumer: audioStreamTask. Thread safe in single producer->single consumer scenario.
+I2SStream i2s; //access from audioStreamTask only
+VolumeStream volume(i2s); //access from audioStreamTask only
+QueueStream<uint8_t> queue(audioBuffer); //access from audioStreamTask only
 StreamCopy copier(volume, queue);
 AudioInfo info(SAMPLE_RATE, CHANNELS, BITS_PER_SAMPLE);
+volatile bool outputFlushScheduled = false;
 
 unsigned long getSpeakingDuration() {
     if (deviceState == SPEAKING && speakingStartTime > 0) {
@@ -65,45 +68,39 @@ unsigned long getSpeakingDuration() {
     return 0;
 }
 
-void transitionToSpeaking() {    
+// networkTask -> webSocket.loop() -> webSocketEvent(WStype_TEXT, ...) -> transitionToSpeaking()
+void transitionToSpeaking() {
     vTaskDelay(50);
 
-    i2sInput.flush();
+    i2sInputFlushScheduled = true;
     
-    if (xSemaphoreTake(wsMutex, pdMS_TO_TICKS(100)) == pdTRUE) {
-        deviceState = SPEAKING;
-        digitalWrite(I2S_SD_OUT, HIGH);
-        speakingStartTime = millis();
-        
-        webSocket.enableHeartbeat(30000, 15000, 3);
-        xSemaphoreGive(wsMutex);
-    }
+    deviceState = SPEAKING;
+    digitalWrite(I2S_SD_OUT, HIGH);
+    speakingStartTime = millis();
+    
+    webSocket.enableHeartbeat(30000, 15000, 3);
     
     Serial.println("Transitioned to speaking mode");
 }
 
+// networkTask -> transitionToListening()
+// ( networkTask -> webSocket.loop() -> webSocketEvent(WStype_TEXT, ...) -> (sets scheduleListeningRestart) -> networkTask -> transitionToListening() )
 void transitionToListening() {
     deviceState = PROCESSING;   
     scheduleListeningRestart = false;
     Serial.println("Transitioning to listening mode");
 
-    // These stream operations don't directly interact with the WebSocket
-    i2s.flush();
-    volume.flush();
-    queue.flush();
-    i2sInput.flush();
-    audioBuffer.reset();    
+    i2sInputFlushScheduled = true;
+    outputFlushScheduled = true;
 
     Serial.println("Transitioned to listening mode");
 
-    if (xSemaphoreTake(wsMutex, pdMS_TO_TICKS(100)) == pdTRUE) {
-        deviceState = LISTENING;
-        digitalWrite(I2S_SD_OUT, LOW);
-        webSocket.disableHeartbeat();
-        xSemaphoreGive(wsMutex);
-    }
+    deviceState = LISTENING;
+    digitalWrite(I2S_SD_OUT, LOW);
+    webSocket.disableHeartbeat();
 }
 
+// audioStreamTask -> copier.copy() (conditional on webSocket.isConnected())
 void audioStreamTask(void *parameter) {
     Serial.println("Starting I2S stream pipeline...");
     
@@ -114,8 +111,13 @@ void audioStreamTask(void *parameter) {
     cfg.channels = CHANNELS;
     cfg.bits_per_sample = BITS_PER_SAMPLE;
     cfg.max_buffer_size = 6144;
+
+    xSemaphoreTake(wsMutex, portMAX_DELAY);
     opusDecoder.setOutput(bufferPrint);
     opusDecoder.begin(cfg);
+    xSemaphoreGive(wsMutex);
+
+    audioBuffer.setReadMaxWait(0);
     
     queue.begin();
 
@@ -134,53 +136,60 @@ void audioStreamTask(void *parameter) {
     auto vcfg = volume.defaultConfig();
     vcfg.copyFrom(config);
     vcfg.allow_boost = true;
-    volume.begin(vcfg);   
+    volume.begin(vcfg);
 
     while (1) {
+        if ( outputFlushScheduled) {
+            outputFlushScheduled = false;
+            i2s.flush();
+            volume.flush();
+            queue.flush();
+            //audioBuffer.reset(); todo: read untill empty
+        }
+
         if (webSocket.isConnected() && deviceState == SPEAKING) {
-            copier.copy();  
+            copier.copy();
+        }
+        else {
+            //we should always read from audioBuffer, otherwise writing thread can stuck
+            queue.read();
         }
         vTaskDelay(1); 
     }
 }
 
 
-// AUDIO INPUT SETTINGS
 class WebsocketStream : public Print {
 public:
+    // micTask -> micToWsCopier.copyBytes() -> wsStream.write()
     virtual size_t write(uint8_t b) override {
         if (!webSocket.isConnected() || deviceState != LISTENING) {
             return 1;
         }
         
-        if (xSemaphoreTake(wsMutex, pdMS_TO_TICKS(100)) == pdTRUE) {
-            webSocket.sendBIN(&b, 1);
-            xSemaphoreGive(wsMutex);
-            return 1;
-        }
-        
+        xSemaphoreTake(wsMutex, portMAX_DELAY);
+        webSocket.sendBIN(&b, 1);
+        xSemaphoreGive(wsMutex);
         return 1;
     }
     
+    // micTask -> micToWsCopier.copyBytes() -> wsStream.write()
     virtual size_t write(const uint8_t *buffer, size_t size) override {
         if (size == 0 || !webSocket.isConnected() || deviceState != LISTENING) {
             return size;
         }
         
-        
-        if (xSemaphoreTake(wsMutex, pdMS_TO_TICKS(100)) == pdTRUE) {
-            webSocket.sendBIN(buffer, size);
-            xSemaphoreGive(wsMutex);
-            return size;
-        }
-
+        xSemaphoreTake(wsMutex, portMAX_DELAY);
+        webSocket.sendBIN(buffer, size);
+        xSemaphoreGive(wsMutex);
         return size;
     }
 };
 
-WebsocketStream wsStream;
-I2SStream i2sInput;
+WebsocketStream wsStream; //guard with wsMutex
+I2SStream i2sInput; //access from micTask only
 StreamCopy micToWsCopier(wsStream, i2sInput);
+volatile bool i2sInputFlushScheduled = false;
 const int MIC_COPY_SIZE = 64;
 
 void micTask(void *parameter) {
@@ -198,10 +207,12 @@ void micTask(void *parameter) {
     i2sConfig.port_no = I2S_PORT_IN;
     i2sInput.begin(i2sConfig);
 
+    micToWsCopier.setDelayOnNoData(0);
+
     while (1) {
-        // Check to see if a transition to listening mode is scheduled.
-        if (scheduleListeningRestart && millis() >= scheduledTime) {
-            transitionToListening();
+        if ( i2sInputFlushScheduled ) {
+            i2sInputFlushScheduled = false;
+            i2sInput.flush();
         }
 
         if (deviceState == LISTENING && webSocket.isConnected()) {
@@ -217,6 +228,7 @@ void micTask(void *parameter) {
 }
 
 // WEBSOCKET EVENTS
+// networkTask -> webSocket.loop() -> webSocketEvent()
 void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
 {
     switch (type)
@@ -276,7 +288,7 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
                 // Check if volume_control is included in the message
                 if (doc.containsKey("volume_control")) {
                     int newVolume = doc["volume_control"].as<int>();
-                    volume.setVolume(newVolume / 100.0f);
+                    volume.setVolume(newVolume / 100.0f * 1.4f);
                 }
 
                 scheduleListeningRestart = true;
@@ -317,9 +329,13 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
     }
 }
 
+// wifiTask -> WIFIMANAGER::loop() -> WIFIMANAGER::tryConnect() -> connectCb() -> websocketSetup()
 void websocketSetup(String server_domain, int port, String path)
 {
     String headers = "Authorization: Bearer " + String(authTokenGlobal);
+
+    xSemaphoreTake(wsMutex, portMAX_DELAY);
+
     webSocket.setExtraHeaders(headers.c_str());
     webSocket.onEvent(webSocketEvent);
     webSocket.setReconnectInterval(1000);
@@ -331,12 +347,23 @@ void websocketSetup(String server_domain, int port, String path)
     #else
     webSocket.beginSslWithCA(server_domain.c_str(), port, path.c_str(), CA_cert);
     #endif
+
+    xSemaphoreGive(wsMutex);
 }
 
+// networkTask -> webSocket.loop()
 void networkTask(void *parameter) {
     while (1) {
+        xSemaphoreTake(wsMutex, portMAX_DELAY);
+
+        // Check to see if a transition to listening mode is scheduled.
+        if (scheduleListeningRestart && millis() >= scheduledTime) {
+            transitionToListening();
+        }
+
         webSocket.loop();
+        xSemaphoreGive(wsMutex);
+
         vTaskDelay(1);
     }
 }
-
