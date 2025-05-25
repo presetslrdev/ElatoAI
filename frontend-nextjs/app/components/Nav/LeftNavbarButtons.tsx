@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Home, Sparkle, ChevronDown, Dog, Bird, Hop, Plus, Blocks, Gamepad2 } from "lucide-react";
+import { Home, Sparkle, ChevronDown, Dog, Bird, Hop, Plus, Blocks, Gamepad2, Link } from "lucide-react";
 import {
     DropdownMenuSeparator,
     DropdownMenu,
@@ -42,7 +42,8 @@ export default function LeftNavbarButtons({ user }: LeftNavbarButtonsProps) {
             title="Click to go to Home page"
         >
             <a href="https://www.elatoai.com">
-                <Home size={18} className="mr-1" />
+                <Link size={18} className="mr-1" />
+                <span className="text-md font-normal mr-1">Main Website</span>
                 <p className="flex items-center font-silkscreen text-xl">
                     <span>Elato</span>
                 </p>
