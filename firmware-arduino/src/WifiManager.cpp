@@ -19,15 +19,15 @@ bool isDeviceRegistered() {
   }
 
     HTTPClient http;
-    WiFiClientSecure client;
-    client.setCACert(Vercel_CA_cert);
 
     #ifdef DEV_MODE
-    http.begin("http://" + String(backend_server) + ":" + String(backend_port) +
-                 "/api/generate_auth_token?macAddress=" + WiFi.macAddress());
+      http.begin("http://" + String(backend_server) + ":" + String(backend_port) +
+                  "/api/generate_auth_token?macAddress=" + WiFi.macAddress());
     #else
-    http.begin(client, "https://" + String(backend_server) +
-                 "/api/generate_auth_token?macAddress=" + WiFi.macAddress());
+      WiFiClientSecure client;
+      client.setCACert(Vercel_CA_cert);
+      http.begin(client, "https://" + String(backend_server) +
+                  "/api/generate_auth_token?macAddress=" + WiFi.macAddress());
     #endif
 
     http.setTimeout(10000);

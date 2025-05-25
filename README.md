@@ -57,10 +57,10 @@ git clone git@github.com:akdeb/ElatoAI.git
 
 2. **Start Supabase**
 
-Install [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started) and set up your Local Supabase Backend. From the root directory, run:
+Install [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started) and set up your Local Supabase Backend. Make sure you have Docker Desktop set up. Then from the root directory, run:
 ```bash
 brew install supabase/tap/supabase
-supabase start # Starts your local Supabase server with the default migrations and seed data.
+supabase start # This starts your local Supabase server with the default migrations and seed data.
 ```
 
 3. **Set up your NextJS Frontend**

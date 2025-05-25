@@ -7,8 +7,8 @@ import type {
     WebSocketServer as _WebSocketServer,
 } from "npm:@types/ws";
 
-import { RealtimeClient } from "https://raw.githubusercontent.com/akdeb/openai-realtime-api-beta/refs/heads/main/lib/client.js";
-import { RealtimeUtils } from "https://raw.githubusercontent.com/akdeb/openai-realtime-api-beta/refs/heads/main/lib/utils.js";
+import { RealtimeClient } from "./realtime/client.js";
+import { RealtimeUtils } from "./realtime/utils.js";
 import { authenticateUser } from "./utils.ts";
 import {
     addConversation,

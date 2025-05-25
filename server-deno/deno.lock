@@ -1,8 +1,6 @@
 {
-  "version": "4",
+  "version": "5",
   "specifiers": {
-    "jsr:@std/assert@1": "1.0.11",
-    "jsr:@std/internal@^1.0.5": "1.0.5",
     "jsr:@supabase/supabase-js@2": "2.48.1",
     "jsr:@supabase/supabase-js@^2.48.1": "2.48.1",
     "npm:@evan/opus@^1.0.3": "1.0.3",
@@ -15,15 +13,6 @@
     "npm:ws@*": "8.18.0"
   },
   "jsr": {
-    "@std/assert@1.0.11": {
-      "integrity": "2461ef3c368fe88bc60e186e7744a93112f16fd110022e113a0849e94d1c83c1",
-      "dependencies": [
-        "jsr:@std/internal"
-      ]
-    },
-    "@std/internal@1.0.5": {
-      "integrity": "54a546004f769c1ac9e025abd15a76b6671ddc9687e2313b67376125650dc7ba"
-    },
     "@supabase/supabase-js@2.48.1": {
       "integrity": "747e85c2a546efcc9f84b343b08e10e3818d468ae214506b59dc65a36fd2d702",
       "dependencies": [
@@ -79,8 +68,8 @@
         "@supabase/node-fetch"
       ]
     },
-    "@types/node@22.12.0": {
-      "integrity": "sha512-Fll2FZ1riMjNmlmJOdAyY5pUbkftXslB5DgEzlIuNaiWhXd00FhWxVC/r4yV/4wBb9JfImTu+jiSvXTkJ7F/gA==",
+    "@types/node@22.13.0": {
+      "integrity": "sha512-ClIbNe36lawluuvq3+YYhnIN2CELi+6q8NpnM7PYp4hBn/TatfboPgVSm2rwKRfnV2M+Ty9GWDFI64KEe+kysA==",
       "dependencies": [
         "undici-types"
       ]
@@ -194,12 +183,7 @@
     "https://deno.land/x/jose@v5.9.6/util/decode_jwt.ts": "a6347360591bd60b076d115fc231e3ecd84aef319922a6c6e94554e68863e3af",
     "https://deno.land/x/jose@v5.9.6/util/decode_protected_header.ts": "3412c8aacffee93148478f14a0ebb97b2ff060944f49dd233223d262f592ee36",
     "https://deno.land/x/jose@v5.9.6/util/errors.ts": "b7ecf22990ce73a42650fd09666fb7174fcd91eec387aa26b361269c8022220f",
-    "https://deno.land/x/jose@v5.9.6/util/runtime.ts": "088cae7df0d285065f141d880c5c21a572234997082337d1125d7f1603059642",
-    "https://raw.githubusercontent.com/akdeb/openai-realtime-api-beta/refs/heads/main/lib/api.js": "fb958c31e4c4e04dd4bee56c35f8cd0b69b72dd6abf297e3bf71a498f1f07f5a",
-    "https://raw.githubusercontent.com/akdeb/openai-realtime-api-beta/refs/heads/main/lib/client.js": "390bcc3d817f4c3deadcec4e65ce8e915e4f8ae19aee32d62de2e71f9adab65d",
-    "https://raw.githubusercontent.com/akdeb/openai-realtime-api-beta/refs/heads/main/lib/conversation.js": "f2ffef21963a669d705cfccdbc4ee92524e81f8680d0cb12914f18eebc2b1369",
-    "https://raw.githubusercontent.com/akdeb/openai-realtime-api-beta/refs/heads/main/lib/event_handler.js": "0eeea0fd7d288b25995233a644632b61c84d5af196ba5d0422d0b4040058c595",
-    "https://raw.githubusercontent.com/akdeb/openai-realtime-api-beta/refs/heads/main/lib/utils.js": "aecdf22b2530c1b5763a5888d43f3bdc76266f63ed0628c35ab54518e7dd436b"
+    "https://deno.land/x/jose@v5.9.6/util/runtime.ts": "088cae7df0d285065f141d880c5c21a572234997082337d1125d7f1603059642"
   },
   "workspace": {
     "dependencies": [
