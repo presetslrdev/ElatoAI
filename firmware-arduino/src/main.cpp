@@ -31,7 +31,7 @@ void enterSleep()
     // First, change device state to prevent any new data processing
     deviceState = SLEEP;
     scheduleListeningRestart = false;
-    outputFlushScheduled = true;
+    i2sOutputFlushScheduled = true;
     i2sInputFlushScheduled = true;
     vTaskDelay(10);  //let all tasks accept state
 
@@ -42,7 +42,7 @@ void enterSleep()
     i2s_stop(I2S_PORT_OUT);
 
     // Clear any remaining audio in buffer
-    outputFlushScheduled = true;
+    i2sOutputFlushScheduled = true;
 
     // Properly disconnect WebSocket and wait for it to complete
     if (webSocket.isConnected()) {

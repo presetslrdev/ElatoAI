@@ -31,7 +31,7 @@ extern VolumeStream volume;
 extern QueueStream<uint8_t> queue;
 extern StreamCopy copier;
 extern AudioInfo info;
-extern volatile bool outputFlushScheduled;
+extern volatile bool i2sOutputFlushScheduled;
 
 // AUDIO INPUT
 extern I2SStream i2sInput;

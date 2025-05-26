@@ -59,7 +59,7 @@ VolumeStream volume(i2s); //access from audioStreamTask only
 QueueStream<uint8_t> queue(audioBuffer); //access from audioStreamTask only
 StreamCopy copier(volume, queue);
 AudioInfo info(SAMPLE_RATE, CHANNELS, BITS_PER_SAMPLE);
-volatile bool outputFlushScheduled = false;
+volatile bool i2sOutputFlushScheduled = false;
 
 unsigned long getSpeakingDuration() {
     if (deviceState == SPEAKING && speakingStartTime > 0) {
@@ -91,7 +91,7 @@ void transitionToListening() {
     Serial.println("Transitioning to listening mode");
 
     i2sInputFlushScheduled = true;
-    outputFlushScheduled = true;
+    i2sOutputFlushScheduled = true;
 
     Serial.println("Transitioned to listening mode");
 
@@ -139,8 +139,8 @@ void audioStreamTask(void *parameter) {
     volume.begin(vcfg);
 
     while (1) {
-        if ( outputFlushScheduled) {
-            outputFlushScheduled = false;
+        if ( i2sOutputFlushScheduled) {
+            i2sOutputFlushScheduled = false;
             i2s.flush();
             volume.flush();
             queue.flush();
