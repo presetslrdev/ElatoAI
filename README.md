@@ -87,7 +87,7 @@ npm run dev
 
 - **DEV_MODE:** Alternatively, you can run your own edge server locally by following the instructions below and in the [Deno server README](server-deno/README.md).
 
-- > **Pro Tip:** You can adjust this server setting in the `firmware-arduino/Config.h` file.
+> **Pro Tip:** You can adjust this server setting in the `firmware-arduino/Config.h` file.
 
 5. **If you choose to run your own edge server locally:**
 
