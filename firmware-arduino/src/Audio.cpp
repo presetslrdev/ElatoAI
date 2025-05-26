@@ -288,7 +288,7 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
                 // Check if volume_control is included in the message
                 if (doc.containsKey("volume_control")) {
                     int newVolume = doc["volume_control"].as<int>();
-                    volume.setVolume(newVolume / 100.0f * 1.4f);
+                    volume.setVolume(newVolume / 100.0f);
                 }
 
                 scheduleListeningRestart = true;
