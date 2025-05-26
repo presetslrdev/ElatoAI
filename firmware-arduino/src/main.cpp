@@ -41,9 +41,6 @@ void enterSleep()
     i2s_stop(I2S_PORT_IN);
     i2s_stop(I2S_PORT_OUT);
 
-    // Clear any remaining audio in buffer
-    i2sOutputFlushScheduled = true;
-
     // Properly disconnect WebSocket and wait for it to complete
     if (webSocket.isConnected()) {
         webSocket.disconnect();
