@@ -7,7 +7,7 @@ Realtime AI Speech powered by OpenAI Realtime API, ESP32, Secure WebSockets, and
 
 <div align="center">
 
-[![Discord](https://img.shields.io/badge/Discord-72_members-5865F2?style=flat&logo=discord&logoColor=white)](https://discord.gg/KJWxDPBRUj)
+[![Discord](https://img.shields.io/badge/Discord-74_members-5865F2?style=flat&logo=discord&logoColor=white)](https://discord.gg/KJWxDPBRUj)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](https://opensource.org/licenses/MIT)
 ![Node.js](https://img.shields.io/badge/Node.js-22.13.0-yellow.svg)
 ![Next.js](https://img.shields.io/badge/Next.js-14.2.7-brightgreen.svg)
@@ -81,9 +81,17 @@ cp .env.example .env.local
 npm run dev
 ```
 
-4. **Start the Deno server**
+4. **Choose edge server option**
 
-([See the Deno server README](server-deno/README.md))
+- **ELATO_MODE:** We offer a fully hosted edge server for you to use. Register your device on the [device settings page](https://wwww.elatoai.com/home/settings/device) and it will automatically connect to our edge server. Check out our [Pricing page](https://www.elatoai.com/#pricing) for more details.
+
+- **DEV_MODE:** Alternatively, you can run your own edge server locally by following the instructions below and in the [Deno server README](server-deno/README.md).
+
+- > **Pro Tip:** You can adjust this server setting in the `firmware-arduino/Config.h` file.
+
+5. **If you choose to run your own edge server locally:**
+
+
 ```bash
 # Navigate to the server directory
 cd server-deno
@@ -97,19 +105,20 @@ cp .env.example .env
 deno run -A --env-file=.env main.ts
 ```
 
-5. **Setup the ESP32 Device firmware**
+6. **Setup the ESP32 Device firmware**
 
 ([See the ESP32 Device README](firmware-arduino/README.md))
 
 In `Config.cpp` set `ws_server` and `backend_server` to your local IP address. Run `ifconfig` in your console and find `en0` -> `inet` -> `192.168.1.100` (it may be different for your Wifi network). This tells the ESP32 device to connect to your NextJS frontend and Deno server running on your local machine. All services should be on the same Wifi network.
 
-6. **Setup the ESP32 Device Wifi**
+7. **Setup the ESP32 Device Wifi**
 
 Build and upload the firmware to your ESP32 device. The ESP32 should open an `ELATO-DEVICE` captive portal to connect to Wifi. Connect to it and go to `http://192.168.4.1` to configure the device wifi.
 
-7. Once your Wifi credentials are configured, turn the device off and on again and it should connect to your Wifi and your server.
+8. **Turn on your device**
 
-8. Now you can talk to your AI Character!
+Once your Wifi credentials are configured, turn the device off and on again and it should connect to your Wifi and your server. Now you can talk to your AI Character!
+
 
 ## 🤖🤖🤖 Getting Started with multiple devices
 
