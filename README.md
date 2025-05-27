@@ -7,7 +7,7 @@ Realtime AI Speech powered by OpenAI Realtime API, ESP32, Secure WebSockets, and
 
 <div align="center">
 
-[![Discord](https://img.shields.io/badge/Discord-74_members-5865F2?style=flat&logo=discord&logoColor=white)](https://discord.gg/KJWxDPBRUj)
+[![Discord](https://img.shields.io/badge/Discord-75_members-5865F2?style=flat&logo=discord&logoColor=white)](https://discord.gg/KJWxDPBRUj)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](https://opensource.org/licenses/MIT)
 ![Node.js](https://img.shields.io/badge/Node.js-22.13.0-yellow.svg)
 ![Next.js](https://img.shields.io/badge/Next.js-14.2.7-brightgreen.svg)
@@ -83,9 +83,9 @@ npm run dev
 
 4. **Choose edge server option**
 
-- **ELATO_MODE:** We offer a fully hosted edge server for you to use. Register your device on the [device settings page](https://wwww.elatoai.com/home/settings/device) and it will automatically connect to our edge server. Check out our [Pricing page](https://www.elatoai.com/#pricing) for more details.
+- **ELATO MODE:** Got your own ESP32 hardware device? We offer a fully hosted edge server for you to use! Register your device on the [settings page](https://wwww.elatoai.com/home/settings/device) and it will automatically connect to our edge server. Check out our [Pricing page](https://www.elatoai.com/#pricing) for more details.
 
-- **DEV_MODE:** Alternatively, you can run your own edge server locally by following the instructions below and in the [Deno server README](server-deno/README.md).
+- **DEV MODE:** Alternatively, you can run your own edge server locally by following the instructions below and in the [Deno server README](server-deno/README.md).
 
 > **Pro Tip:** You can adjust this server setting in the `firmware-arduino/Config.h` file.
 
