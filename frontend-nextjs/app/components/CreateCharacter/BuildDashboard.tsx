@@ -17,6 +17,8 @@ import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { emotionOptions, r2UrlAudio, voices } from "@/lib/data";
 import EmojiComponent from "./EmojiComponent";
+import { PitchFactors } from "@/lib/utils";
+import { Slider } from "@/components/ui/slider";
 
 interface SettingsDashboardProps {
     selectedUser: IUser;
@@ -30,7 +32,8 @@ const formSchema = z.object({
   voice: z.string().min(1, "Voice selection is required"),
   voiceCharacteristics: z.object({
     features: z.string().min(10, "Minimum 10 characters").max(150, "Maximum 150 characters"),
-    emotion: z.string()
+    emotion: z.string(),
+    pitchFactor: z.number().min(0.75).max(1.5),
   })
 });
 
@@ -57,7 +60,8 @@ const SettingsDashboard: React.FC<SettingsDashboardProps> = ({
         voice: '',
         voiceCharacteristics: {
           features: '',
-          emotion: 'neutral'
+          emotion: 'neutral',
+          pitchFactor: 1.0,
         }
       });
 
@@ -110,30 +114,33 @@ const SettingsDashboard: React.FC<SettingsDashboardProps> = ({
         }
       };
     
-    const handleVoiceCharacteristicChange = (characteristic: 'features' | 'emotion', value: string) => {
-      const newVoiceCharacteristics = {
-        ...formData.voiceCharacteristics,
-        [characteristic]: value
-      };
-      
-      // Validate just this nested field
-      try {
-        formSchema.shape.voiceCharacteristics.shape[characteristic].parse(value);
-        // Clear error if validation passes
-        setFormErrors(prev => ({ ...prev, [characteristic]: undefined }));
-      } catch (error: unknown) {
-        if (error instanceof z.ZodError) {
-          // Type assertion is needed here
-          const zodError = error as z.ZodError;
-          setFormErrors(prev => ({ ...prev, [characteristic]: zodError.errors[0].message }));
+      const handleVoiceCharacteristicChange = (characteristic: 'features' | 'emotion' | 'pitchFactor', value: string | number) => {
+        const newVoiceCharacteristics = {
+          ...formData.voiceCharacteristics,
+          [characteristic]: characteristic === 'pitchFactor' ? Number(value) : value
+        };
+        
+        // Validate just this nested field
+        try {
+          if (characteristic === 'pitchFactor') {
+            formSchema.shape.voiceCharacteristics.shape.pitchFactor.parse(newVoiceCharacteristics[characteristic]);
+          } else {
+            formSchema.shape.voiceCharacteristics.shape[characteristic].parse(newVoiceCharacteristics[characteristic]);
+          }
+          // Clear error if validation passes
+          setFormErrors(prev => ({ ...prev, [characteristic]: undefined }));
+        } catch (error: unknown) {
+          if (error instanceof z.ZodError) {
+            const zodError = error as z.ZodError;
+            setFormErrors(prev => ({ ...prev, [characteristic]: zodError.errors[0].message }));
+          }
         }
-      }
-      
-      setFormData({
-        ...formData,
-        voiceCharacteristics: newVoiceCharacteristics
-      });
-  };
+        
+        setFormData({
+          ...formData,
+          voiceCharacteristics: newVoiceCharacteristics
+        });
+      };
   
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -174,7 +181,8 @@ const SettingsDashboard: React.FC<SettingsDashboardProps> = ({
         is_story: false,
         key: formData.title.toLowerCase().replace(/ /g, '_') + "_" + uuidv4(),
         creator_id: selectedUser.user_id,
-        short_description: formData.description
+        short_description: formData.description,
+        pitch_factor: formData.voiceCharacteristics.pitchFactor
       });
 
       if (personality) {
@@ -248,204 +256,240 @@ const SettingsDashboard: React.FC<SettingsDashboardProps> = ({
     };
 
     return (
-        <div className="overflow-hidden pb-2 w-full flex-auto flex flex-col pl-1 max-w-screen-sm">
-            <Heading />
-            <form onSubmit={handleSubmit} className="space-y-6 mt-8 w-full pr-1">
-          
-            {currentStep === 'personality' ? <div className="space-y-4">
-              <h2 className="text-lg font-semibold border-b border-gray-200 pb-2">
-                        Character Details
-                    </h2>
-            <div className="space-y-2">
-              <Label htmlFor="title">Title</Label>
-              <Input 
-                id="title"
-                placeholder="E.g., 'Storytelling Assistant'" 
-                value={formData.title}
-                onChange={(e) => handleInputChange('title', e.target.value)}
-                onBlur={() => handleBlur('title')}
-                              />
-              <p className="text-sm flex justify-between">
-    <span className={formErrors.title ? "text-red-500" : "text-gray-500"}>
-      {formErrors.title || "Give your AI character a name or title."}
-    </span>
-    <span className="text-gray-500">{formData.title.length}/50</span>
-  </p>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
-              <Textarea 
-                id="description"
-                placeholder="Describe what your AI character does and its personality..." 
-                rows={2}
-                value={formData.description}
-                onChange={(e) => handleInputChange('description', e.target.value)}
-                onBlur={() => handleBlur('description')}              />
-              <p className="text-sm flex justify-between">
-    <span className={formErrors.description ? "text-red-500" : "text-gray-500"}>
-      {formErrors.description || "Briefly describe your character's purpose and personality."}
-    </span>
-    <span className="text-gray-500">{formData.description.length}/200</span>
-  </p>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="prompt">Prompt</Label>
-              <Textarea 
-                id="prompt"
-                placeholder="Enter specific instructions for how your AI should respond..." 
-                rows={4}
-                value={formData.prompt}
-                onChange={(e) => handleInputChange('prompt', e.target.value)}
-                onBlur={() => handleBlur('prompt')} 
-                             />
-              <p className="text-sm flex justify-between">
-    <span className={formErrors.prompt ? "text-red-500" : "text-gray-500"}>
-      {formErrors.prompt || "Detailed instructions that define how your AI responds to users."}
-    </span>
-    <span className="text-gray-500">{formData.prompt.length}/1000</span>
-  </p>
-            </div>
-            </div> :
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold border-b border-gray-200 pb-2">
-                        Voice Details
-                    </h2>
-            <div className="space-y-2">
-              <Label htmlFor="voice">Pick a voice</Label>
-              <p className="text-sm text-gray-500">
-                Click a voice to preview how it sounds. Select one for your character.
-              </p>
-              <div className="grid grid-cols-3 gap-3">
-                {voices.map((voice) => (
-                  <div 
-                  key={voice.id}
-                  className={`
-                    rounded-lg border p-3 transition-all relative
-                    ${formData.voice === voice.id 
-                      ? 'border-2 border-blue-500 shadow-sm ' + voice.color 
-                      : 'border-gray-200 hover:border-gray-300 cursor-pointer'
-                    }
-                  `}
-                  onClick={() => {
-                    handleInputChange('voice', voice.id);
-                    previewVoice(voice.id);
-                  }}
-                >
-                  <div className="flex flex-col">
-                  <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3">
-                      <div className="text-2xl mt-0.5">
-                        <EmojiComponent emoji={voice.emoji} />
-                      </div>
-                      <div className="flex flex-col text-center sm:text-left">
-                        <span className="font-medium">{voice.name}</span>
-                        <span className="text-xs text-gray-600">{voice.description}</span>
-                      </div>
-                    </div>
-                    
-                    {previewingVoice === voice.id && (
-  <div className="absolute top-2 right-2">
-    <div className="animate-pulse text-blue-500">
-      <Volume2 size={20} />
-    </div>
-  </div>
-)}
+      <div className="overflow-hidden pb-2 w-full flex-auto flex flex-col pl-1 max-w-screen-sm">
+      <form onSubmit={handleSubmit} className="space-y-6 mt-8 w-full pr-1">
+    
+      {currentStep === 'personality' ? 
+       <div className="space-y-4">
+       {/* Voice Picker */}
+ <div className="space-y-2">
+ <Label htmlFor="voice">Pick a voice</Label>
+ <p className="text-sm text-gray-500">
+ Click a voice to preview how it sounds.
+ </p>
+ 
+ <div className="grid grid-cols-3 gap-3">
+ {voices.map((voice) => (
+ <div
+ key={voice.id}
+ className={`
+   relative rounded-lg border p-3 transition-all
+   ${formData.voice === voice.id
+     ? 'border-2 border-blue-500 shadow-sm ' + voice.color
+     : 'border-gray-200 hover:border-gray-300 cursor-pointer'
+   }
+ `}
+ onClick={() => {
+   handleInputChange('voice', voice.id);
+   previewVoice(voice.id);
+ }}
+ >
+ <div className="flex flex-col">
+   <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3">
+     <div className="text-2xl mt-0.5">
+       <EmojiComponent emoji={voice.emoji} />
+     </div>
+     <div className="flex flex-col text-center sm:text-left">
+       <span className="font-medium">{voice.name}</span>
+       <span className="text-xs text-gray-600">{voice.description}</span>
+     </div>
+   </div>
+ 
+   {previewingVoice === voice.id && (
+     <div className="absolute top-2 right-2">
+       <div className="animate-pulse text-blue-500">
+         <Volume2 size={20} />
+       </div>
+     </div>
+   )}
+ </div>
+ </div>
+ ))}
+ </div>
+ </div>
+ 
+ <div className="space-y-2">
+ <Label htmlFor="title">Title</Label>
+ <Input 
+ id="title"
+ placeholder="AI Hulk" 
+ value={formData.title}
+ onChange={(e) => handleInputChange('title', e.target.value)}
+ onBlur={() => handleBlur('title')}
+           />
+ <p className="text-sm flex justify-between">
+ <span className={formErrors.title ? "text-red-500" : "text-gray-500"}>
+ {formErrors.title}
+ </span>
+ <span className="text-gray-500">{formData.title.length}/50</span>
+ </p>
+ </div>
+ <div className="space-y-2">
+ <Label htmlFor="description">Description</Label>
+ <Textarea 
+ id="description"
+ placeholder="Describe what your AI character does and its personality..." 
+ rows={2}
+ value={formData.description}
+ onChange={(e) => handleInputChange('description', e.target.value)}
+ onBlur={() => handleBlur('description')}              />
+ <p className="text-sm flex justify-between">
+ <span className={formErrors.description ? "text-red-500" : "text-gray-500"}>
+ {formErrors.description}
+ </span>
+ <span className="text-gray-500">{formData.description.length}/200</span>
+ </p>
+ </div>
+ <div className="space-y-2">
+ <Label htmlFor="prompt">Prompt</Label>
+ <Textarea 
+ id="prompt"
+ placeholder="Enter specific instructions for how your AI should respond..." 
+ rows={4}
+ value={formData.prompt}
+ onChange={(e) => handleInputChange('prompt', e.target.value)}
+ onBlur={() => handleBlur('prompt')} 
+          />
+ <p className="text-sm flex justify-between">
+ <span className={formErrors.prompt ? "text-red-500" : "text-gray-500"}>
+ {formErrors.prompt}
+ </span>
+ <span className="text-gray-500">{formData.prompt.length}/1000</span>
+ </p>
+ </div>
+ </div> :
+        <div className="space-y-6">                      
+        {/* Pitch Slider */}
+        <div className="flex flex-col gap-4 -pt-6 pb-4">
+            <Label htmlFor="pitchFactor">Voice Pitch</Label>
+            <p className="text-sm text-gray-500">
+              Slide to adjust voice depth on your device
+            </p>
+      
+            <div className="space-y-6">
+              <Slider
+                id="pitchFactor"
+                min={0.75}
+                max={1.5}
+                step={0.25}
+                value={[formData.voiceCharacteristics.pitchFactor]}
+                onValueChange={(value: number[]) => {
+                  handleVoiceCharacteristicChange('pitchFactor', value[0]);
+                }}
+                className="w-full"
+              />
+      
+              <div className="flex justify-between text-sm">
+                {PitchFactors.map((item, idx) => (
+                  <div key={idx} className="flex flex-col items-center gap-1">
+                   <EmojiComponent emoji={item.emoji} />
+                    <span className="font-medium">{item.label}</span>
+                    <span className="text-xs hidden sm:block text-gray-500">{item.desc}</span>
                   </div>
-                </div>
                 ))}
               </div>
             </div>
-            <div className="space-y-2">
-                  <Label htmlFor="voiceCharacteristics">Characteristics</Label>
-                  <Textarea 
-  id="voiceCharacteristics"
-  placeholder="e.g., Medium pitch, Normal speed, Clear voice" 
-  className="w-full min-h-16"
-  rows={2}
-  value={formData.voiceCharacteristics.features}
-  onChange={(e) => {
-    const value = e.target.value;
-    setFormData(prev => ({
-      ...prev,
-      voiceCharacteristics: {
-        ...prev.voiceCharacteristics,
-        features: value
-      }
-    }));
-    // Only validate if touched
-    if (touchedFields['features']) {
-      validateField('features', value);
-    }
-  }}
-  onBlur={() => handleBlur('features')}
-/>
-<p className="text-sm flex justify-between">
-    <span className={formErrors.features ? "text-red-500" : "text-gray-500"}>
-      {formErrors.features || "Describe the voice characteristics."}
-    </span>
-    <span className="text-gray-500">{formData.voiceCharacteristics.features.length}/150</span>
-  </p>
-            </div>
-                <div className="space-y-3">
-                  <Label className="block mb-2">Emotional Tone</Label>
-                  <div className="grid grid-cols-3 gap-3">
-                    {emotionOptions.map((emotion) => (
-                      <div 
-                        key={emotion.value}
-                        className={`
-                          rounded-lg border p-3 cursor-pointer transition-all
-                          ${formData.voiceCharacteristics.emotion === emotion.value 
-                            ? 'border-2 border-blue-500 shadow-sm ' + emotion.color 
-                            : 'border-gray-200 hover:border-gray-300'
-                          }
-                        `}
-                        onClick={() => handleVoiceCharacteristicChange('emotion', emotion.value)}
-                      >
-                        <div className="flex flex-col items-center text-center">
-                          <EmojiComponent emoji={emotion.icon} />
-                          <span className="text-sm font-medium">{emotion.label}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-            </div>}
-           
-           
-            {currentStep === 'personality' ? (
-          <Button 
-            onClick={() => setCurrentStep('voice')}
-            className="ml-auto flex flex-row gap-2 items-center"
-          >
-            Add Voice Features <ArrowRight className="w-4 h-4" />
-          </Button>
-        ) : (
-            <div className="w-full flex justify-between">
-            <Button 
-              variant="outline" 
-              className="flex flex-row gap-2 items-center"
-              onClick={() => setCurrentStep('personality')}
-            >
-              <ArrowLeft className="w-4 h-4" /> Back 
-            </Button>
-            <Button 
-      variant="default"
-      className="flex flex-row gap-2 items-center"
-      type="submit"
-      disabled={
-        isSubmitting || 
-        formData.title === '' || 
-        formData.description === '' || 
-        formData.prompt === '' || 
-        formData.voice === '' || 
-        formData.voiceCharacteristics.features === ''
-      }
-    >
-      {isSubmitting ? "Creating..." : "Create"} {!isSubmitting && <Check className="w-4 h-4" />}
-    </Button>
           </div>
-        )}
-        </form>
+      
+      
+                    {/* Voice Characteristics Textarea */}
+                    <div className="space-y-2">
+          <Label htmlFor="voiceCharacteristics">Characteristics</Label>
+          <Textarea
+            id="voiceCharacteristics"
+            placeholder="e.g., Medium pitch, Normal speed, Clear voice"
+            className="w-full min-h-16"
+            rows={2}
+            value={formData.voiceCharacteristics.features}
+            onChange={(e) => {
+              const value = e.target.value;
+              setFormData((prev) => ({
+                ...prev,
+                voiceCharacteristics: {
+                  ...prev.voiceCharacteristics,
+                  features: value,
+                },
+              }));
+              if (touchedFields['features']) {
+                validateField('features', value);
+              }
+            }}
+            onBlur={() => handleBlur('features')}
+          />
+          <p className="text-sm flex justify-between">
+            <span className={formErrors.features ? 'text-red-500' : 'text-gray-500'}>
+              {formErrors.features}
+            </span>
+            <span className="text-gray-500">
+              {formData.voiceCharacteristics.features.length}/150
+            </span>
+          </p>
         </div>
+      
+        {/* Emotional Tone Picker */}
+        <div className="space-y-4 pb-2">
+          <Label className="block mb-2">Emotional Tone</Label>
+          <div className="grid grid-cols-3 gap-3">
+            {emotionOptions.map((emotion) => (
+              <div
+                key={emotion.value}
+                className={`
+                  rounded-lg border p-3 cursor-pointer transition-all
+                  ${formData.voiceCharacteristics.emotion === emotion.value
+                    ? 'border-2 border-blue-500 shadow-sm ' + emotion.color
+                    : 'border-gray-200 hover:border-gray-300'
+                  }
+                `}
+                onClick={() =>
+                  handleVoiceCharacteristicChange('emotion', emotion.value)
+                }
+              >
+                <div className="flex flex-col items-center text-center">
+                  <EmojiComponent emoji={emotion.icon} />
+                  <span className="text-sm font-medium">{emotion.label}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    }
+     
+    { currentStep === 'personality' ? (
+  <Button 
+    onClick={() => setCurrentStep('voice')}
+    className="ml-auto flex flex-row gap-2 items-center"
+  >
+    Voice Features <ArrowRight className="w-4 h-4" />
+  </Button>
+) : (
+    <div className="w-full flex justify-between">
+    <Button 
+      variant="outline" 
+      className="flex flex-row gap-2 items-center"
+      onClick={() => setCurrentStep('personality')}
+    >
+      <ArrowLeft className="w-4 h-4" /> Back 
+    </Button>
+    <Button 
+variant="default"
+className="flex flex-row gap-2 items-center"
+type="submit"
+disabled={
+isSubmitting || 
+formData.title === '' || 
+formData.description === '' || 
+formData.prompt === '' || 
+formData.voice === '' || 
+formData.voiceCharacteristics.features === ''
+}
+>
+{isSubmitting ? "Creating..." : "Create"} {!isSubmitting && <Check className="w-4 h-4" />}
+</Button>
+  </div>
+)}
+  </form>
+  </div>
     );
 };
 

@@ -1,9 +1,9 @@
-import { SupabaseClient } from '@supabase/supabase-js';
+import { SupabaseClient } from "@supabase/supabase-js";
 
 declare global {
     interface IConversation {
         conversation_id: string;
-        role: 'user' | 'assistant';
+        role: "user" | "assistant";
         content: string;
         user_id: string;
         is_sensitive: boolean;
@@ -32,7 +32,15 @@ declare global {
         is_child_voice: boolean;
         is_story: boolean;
         key: string;
-        oai_voice: 'ash' | 'alloy' | 'echo' | 'shimmer' | 'ballad' | 'coral' | 'sage' | 'verse';
+        oai_voice:
+            | "ash"
+            | "alloy"
+            | "echo"
+            | "shimmer"
+            | "ballad"
+            | "coral"
+            | "sage"
+            | "verse";
         voice_description: string;
         title: string;
         subtitle: string;
@@ -40,6 +48,7 @@ declare global {
         character_prompt: string;
         voice_prompt: string;
         creator_id: string | null;
+        pitch_factor: number;
     }
 
     interface ILanguage {
@@ -61,15 +70,15 @@ declare global {
 
     type UserInfo =
         | {
-            user_type: 'user';
+            user_type: "user";
             user_metadata: IUserMetadata;
         }
         | {
-            user_type: 'doctor';
+            user_type: "doctor";
             user_metadata: IDoctorMetadata;
         }
         | {
-            user_type: 'business';
+            user_type: "business";
             user_metadata: IBusinessMetadata;
         };
 

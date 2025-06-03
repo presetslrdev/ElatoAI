@@ -6,6 +6,7 @@
 #include "AudioTools/AudioCodecs/CodecOpus.h"
 #include <WebSocketsClient.h>
 #include "Audio.h"
+#include "PitchShift.h"
 
 // WEBSOCKET
 SemaphoreHandle_t wsMutex;
@@ -23,6 +24,7 @@ unsigned long speakingStartTime = 0;
 
 // AUDIO SETTINGS
 int currentVolume = 70;
+float currentPitchFactor = 1.0f;
 const int CHANNELS = 1;         // Mono
 const int BITS_PER_SAMPLE = 16; // 16-bit audio
 
@@ -55,9 +57,17 @@ BufferPrint bufferPrint(audioBuffer);
 OpusAudioDecoder opusDecoder;  //access guarded by wsmutex
 BufferRTOS<uint8_t> audioBuffer(AUDIO_BUFFER_SIZE, AUDIO_CHUNK_SIZE);  //producer: networkTask, consumer: audioStreamTask. Thread safe in single producer->single consumer scenario.
 I2SStream i2s; //access from audioStreamTask only
+
+// OLD with no pitch shift
 VolumeStream volume(i2s); //access from audioStreamTask only
 QueueStream<uint8_t> queue(audioBuffer); //access from audioStreamTask only
 StreamCopy copier(volume, queue);
+
+// NEW for pitch shift (lossy)
+PitchShiftFixedOutput pitchShift(i2s);
+VolumeStream volumePitch(pitchShift); //access from audioStreamTask only
+StreamCopy pitchCopier(volumePitch, queue);
+
 AudioInfo info(SAMPLE_RATE, CHANNELS, BITS_PER_SAMPLE);
 volatile bool i2sOutputFlushScheduled = false;
 
@@ -78,7 +88,7 @@ void transitionToSpeaking() {
     digitalWrite(I2S_SD_OUT, HIGH);
     speakingStartTime = millis();
     
-    webSocket.enableHeartbeat(30000, 15000, 3);
+    // webSocket.enableHeartbeat(30000, 15000, 3);
     
     Serial.println("Transitioned to speaking mode");
 }
@@ -97,7 +107,7 @@ void transitionToListening() {
 
     deviceState = LISTENING;
     digitalWrite(I2S_SD_OUT, LOW);
-    webSocket.disableHeartbeat();
+    // webSocket.disableHeartbeat();
 }
 
 // audioStreamTask -> copier.copy() (conditional on webSocket.isConnected())
@@ -131,24 +141,34 @@ void audioStreamTask(void *parameter) {
     config.port_no = I2S_PORT_OUT;
 
     config.copyFrom(info);  
-    i2s.begin(config);    
+    i2s.begin(config);  
 
+    // Initialize both volume streams once
     auto vcfg = volume.defaultConfig();
-    vcfg.copyFrom(config);
+    vcfg.copyFrom(info);
     vcfg.allow_boost = true;
     volume.begin(vcfg);
+    
+    auto vcfgPitch = volumePitch.defaultConfig();
+    vcfgPitch.copyFrom(info);
+    vcfgPitch.allow_boost = true;
+    volumePitch.begin(vcfgPitch);
 
     while (1) {
         if ( i2sOutputFlushScheduled) {
             i2sOutputFlushScheduled = false;
             i2s.flush();
             volume.flush();
+            volumePitch.flush();
             queue.flush();
-            //audioBuffer.reset(); todo: read untill empty
         }
 
         if (webSocket.isConnected() && deviceState == SPEAKING) {
-            copier.copy();
+            if (currentPitchFactor != 1.0f) {
+                pitchCopier.copy();
+            } else {
+                copier.copy();
+            }
         }
         else {
             //we should always read from audioBuffer, otherwise writing thread can stuck
@@ -260,9 +280,23 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
         // auth messages
         if (strcmp((char*)type.c_str(), "auth") == 0) {
             currentVolume = doc["volume_control"].as<int>();
+            currentPitchFactor = doc["pitch_factor"].as<float>();
+
             bool is_ota = doc["is_ota"].as<bool>();
             bool is_reset = doc["is_reset"].as<bool>();
-            volume.setVolume(currentVolume / 100.0f);  // Set initial volume (e.g., 70/100 = 0.7)
+
+            // Update volumes on both streams
+            volume.setVolume(currentVolume / 100.0f);
+            volumePitch.setVolume(currentVolume / 100.0f);
+            
+            // Only initialize pitch shift if needed
+            if (currentPitchFactor != 1.0f) {
+                auto pcfg = pitchShift.defaultConfig();
+                pcfg.copyFrom(info);
+                pcfg.pitch_shift = currentPitchFactor;
+                pcfg.buffer_size = 512;
+                pitchShift.begin(pcfg);
+            }
 
             if (is_ota) {
                 Serial.println("OTA update received");
@@ -339,8 +373,9 @@ void websocketSetup(String server_domain, int port, String path)
     webSocket.setExtraHeaders(headers.c_str());
     webSocket.onEvent(webSocketEvent);
     webSocket.setReconnectInterval(1000);
+    webSocket.disableHeartbeat();
 
-    webSocket.enableHeartbeat(30000, 15000, 3); // 30s ping interval, 15s timeout, 3 retries
+    // webSocket.enableHeartbeat(30000, 15000, 3); // 30s ping interval, 15s timeout, 3 retries
 
     #ifdef DEV_MODE
     webSocket.begin(server_domain.c_str(), port, path.c_str());

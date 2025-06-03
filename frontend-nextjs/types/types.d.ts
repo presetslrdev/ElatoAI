@@ -60,17 +60,17 @@ declare global {
 
     type UserInfo =
         | {
-              user_type: "user";
-              user_metadata: IUserMetadata;
-          }
+            user_type: "user";
+            user_metadata: IUserMetadata;
+        }
         | {
-              user_type: "doctor";
-              user_metadata: IDoctorMetadata;
-          }
+            user_type: "doctor";
+            user_metadata: IDoctorMetadata;
+        }
         | {
-              user_type: "business";
-              user_metadata: IBusinessMetadata;
-          };
+            user_type: "business";
+            user_metadata: IBusinessMetadata;
+        };
 
     interface IBusinessMetadata {}
 
@@ -100,7 +100,15 @@ declare global {
 
     type TTSModel = "FISH" | "AZURE";
 
-    type OaiVoice = 'ash' | 'alloy' | 'echo' | 'shimmer' | 'ballad' | 'coral' | 'sage' | 'verse';
+    type OaiVoice =
+        | "ash"
+        | "alloy"
+        | "echo"
+        | "shimmer"
+        | "ballad"
+        | "coral"
+        | "sage"
+        | "verse";
 
     // characters <-> personalities table
     interface IPersonality {
@@ -116,6 +124,7 @@ declare global {
         character_prompt: string;
         voice_prompt: string;
         creator_id: string | null;
+        pitch_factor: number;
     }
 
     type PersonalityFilter = "is_child_voice" | "is_doctor" | "is_story";
