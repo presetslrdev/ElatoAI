@@ -116,7 +116,7 @@ wss.on("connection", async (ws: WSWebSocket, payload: IPayload) => {
     ws.send(
         JSON.stringify({
             type: "auth",
-            volume_control: user.device?.volume ?? 20,
+            volume_control: user.device?.volume ?? 100,
             is_ota: user.device?.is_ota ?? false,
             is_reset: user.device?.is_reset ?? false,
             pitch_factor: user.personality?.pitch_factor ?? 1,
