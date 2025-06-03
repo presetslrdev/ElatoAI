@@ -2,12 +2,12 @@
 
 # 🚀 ElatoAI: Realtime Speech AI Agents for ESP32
 
-Realtime AI Speech powered by OpenAI Realtime API, ESP32, Secure WebSockets, and Deno Edge Functions for >10-minute uninterrupted global conversations
+Realtime AI Speech powered by OpenAI Realtime API, ESP32, Secure WebSockets, and Deno Edge Functions for >15-minute uninterrupted global conversations
 
 
 <div align="center">
 
-[![Discord](https://img.shields.io/badge/Discord-78_members-5865F2?style=flat&logo=discord&logoColor=white)](https://discord.gg/KJWxDPBRUj)
+[![Discord](https://img.shields.io/badge/Discord-80_members-5865F2?style=flat&logo=discord&logoColor=white)](https://discord.gg/KJWxDPBRUj)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](https://opensource.org/licenses/MIT)
 ![Node.js](https://img.shields.io/badge/Node.js-22.13.0-yellow.svg)
 ![Next.js](https://img.shields.io/badge/Next.js-14.2.7-brightgreen.svg)
@@ -169,6 +169,7 @@ ElatoAI consists of three main components:
 18. **Button and Touch Support**: Use the button OR touch sensor to control the ESP32 device.
 19. **No PSRAM Required**: The ESP32 device does not require PSRAM to run the speech to speech AI.
 20. **OAuth for Web client**: OAuth for your users to manage their AI characters and devices.
+21. **Pitch Factor**: Control the pitch of the AI's voice from the NextJS webapp to create cartoon-like voices.
 
 ## 🛠 Tech Stack
 
