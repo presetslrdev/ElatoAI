@@ -49,6 +49,7 @@ declare global {
         voice_prompt: string;
         creator_id: string | null;
         pitch_factor: number;
+        first_message_prompt: string;
     }
 
     interface ILanguage {

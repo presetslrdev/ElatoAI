@@ -29,6 +29,7 @@ const formSchema = z.object({
   title: z.string().min(2, "Minimum 2 characters").max(50, "Maximum 50 characters"),
   description: z.string().min(50, "Minimum 50 characters").max(200, "Maximum 200 characters"),
   prompt: z.string().min(100, "Minimum 100 characters").max(1000, "Maximum 1000 characters"),
+  firstMessagePrompt: z.string().min(50, "Minimum 50 characters").max(150, "Maximum 150 characters"),
   voice: z.string().min(1, "Voice selection is required"),
   voiceCharacteristics: z.object({
     features: z.string().min(10, "Minimum 10 characters").max(150, "Maximum 150 characters"),
@@ -41,22 +42,17 @@ type FormData = z.infer<typeof formSchema>;
 
 const SettingsDashboard: React.FC<SettingsDashboardProps> = ({
     selectedUser,
-    allLanguages,
 }) => {
     const supabase = createClient();
     const router = useRouter();
     const [currentStep, setCurrentStep] = useState<'personality' | 'voice'>('personality');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-
-    const [languageState, setLanguageState] = useState<string>(
-        selectedUser.language_code! // Initial value from props
-    );
-
     const [formData, setFormData] = useState({
         title: '',
         description: '',
         prompt: '',
+        firstMessagePrompt: '',
         voice: '',
         voiceCharacteristics: {
           features: '',
@@ -182,7 +178,8 @@ const SettingsDashboard: React.FC<SettingsDashboardProps> = ({
         key: formData.title.toLowerCase().replace(/ /g, '_') + "_" + uuidv4(),
         creator_id: selectedUser.user_id,
         short_description: formData.description,
-        pitch_factor: formData.voiceCharacteristics.pitchFactor
+        pitch_factor: formData.voiceCharacteristics.pitchFactor,
+        first_message_prompt: formData.firstMessagePrompt
       });
 
       if (personality) {
@@ -257,6 +254,7 @@ const SettingsDashboard: React.FC<SettingsDashboardProps> = ({
 
     return (
       <div className="overflow-hidden pb-2 w-full flex-auto flex flex-col pl-1 max-w-screen-sm">
+      <Heading />
       <form onSubmit={handleSubmit} className="space-y-6 mt-8 w-full pr-1">
     
       {currentStep === 'personality' ? 
@@ -355,6 +353,23 @@ const SettingsDashboard: React.FC<SettingsDashboardProps> = ({
  {formErrors.prompt}
  </span>
  <span className="text-gray-500">{formData.prompt.length}/1000</span>
+ </p>
+ </div>
+ <div className="space-y-2">
+ <Label htmlFor="firstMessagePrompt">First message prompt</Label>
+ <Textarea 
+ id="firstMessagePrompt"
+ placeholder="How your AI character should respond in the first message to the user..." 
+ rows={4}
+ value={formData.firstMessagePrompt}
+ onChange={(e) => handleInputChange('firstMessagePrompt', e.target.value)}
+ onBlur={() => handleBlur('firstMessagePrompt')} 
+          />
+ <p className="text-sm flex justify-between">
+ <span className={formErrors.firstMessagePrompt ? "text-red-500" : "text-gray-500"}>
+ {formErrors.firstMessagePrompt}
+ </span>
+ <span className="text-gray-500">{formData.firstMessagePrompt.length}/150</span>
  </p>
  </div>
  </div> :

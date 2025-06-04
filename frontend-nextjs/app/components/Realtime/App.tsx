@@ -210,6 +210,12 @@ function App({ personalityIdState, isDoctor, userId }: AppProps) {
     );
   };
 
+  const createFirstMessage = () => {
+    return personality?.first_message_prompt
+    ? `Always start the conversation following these instructions from the user: ${personality?.first_message_prompt}`
+    : "The user is initiating a new chat here. Say something!";
+  }
+
   const updateSession = (shouldTriggerResponse: boolean = false) => {
     sendClientEvent(
       { type: "input_audio_buffer.clear" },
@@ -247,7 +253,7 @@ function App({ personalityIdState, isDoctor, userId }: AppProps) {
     sendClientEvent(sessionUpdateEvent);
 
     if (shouldTriggerResponse) {
-      sendSimulatedUserMessage(isDoctor ? "Ask the doctor if everything is good and how you can help them and their patient." : "The user is initiating a new chat here. Say something!");
+      sendSimulatedUserMessage(isDoctor ? "Ask the doctor if everything is good and how you can help them and their patient." : createFirstMessage());
     }
   };
 

@@ -73,6 +73,12 @@ const ModifyCharacterSheet: React.FC<ModifyCharacterSheetProps> = ({
                     <p className="text-gray-600 whitespace-pre-line">
                             {openPersonality.character_prompt}
                         </p>
+                        <p className="text-gray-400">
+                        {"First message prompt"}
+                    </p>
+                    <p className="text-gray-600">
+                            {openPersonality.first_message_prompt}
+                        </p>
                      <p className="text-gray-400">
                         {"Voice prompt"}
                     </p>

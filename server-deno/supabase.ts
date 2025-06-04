@@ -205,13 +205,17 @@ ${chatHistory}
 export const createFirstMessage = (
     chatHistory: IConversation[],
     payload: IPayload,
-) => {
-    const { timestamp } = payload;
+): string => {
+    const { timestamp, user } = payload;
 
     // If no chat history, return null (let the system handle a brand new conversation)
     if (!chatHistory || chatHistory.length === 0) {
-        return null;
+        return "";
     }
+
+    const firstMessagePrompt = user.personality?.first_message_prompt
+        ? `Always start the conversation following these instructions from the user: ${user.personality?.first_message_prompt}`
+        : "";
 
     // Get the most recent conversation timestamp
     const lastMessageTime = new Date(chatHistory[0].created_at);
@@ -221,27 +225,32 @@ export const createFirstMessage = (
     const timeDiffMinutes =
         (currentTime.getTime() - lastMessageTime.getTime()) / (1000 * 60);
 
+    let systemFirstMessage: string;
+
     if (timeDiffMinutes < 2) {
         // If less than 5 minutes, likely an accidental disconnection
-        return `The previous conversation was interrupted just moments ago. Please continue where you left off, maintaining the same context and tone.`;
+        systemFirstMessage =
+            `The previous conversation was interrupted just moments ago. Please continue where you left off, maintaining the same context and tone.`;
     } else if (timeDiffMinutes < 60) {
         // If less than an hour
-        return `It's been about ${
+        systemFirstMessage = `It's been about ${
             Math.round(timeDiffMinutes)
         } minutes since your last conversation. You may continue from where you left off or start something new.`;
     } else if (timeDiffMinutes < 60 * 24) {
         // If less than a day
         const hours = Math.round(timeDiffMinutes / 60);
-        return `It's been about ${hours} hour${
+        systemFirstMessage = `It's been about ${hours} hour${
             hours > 1 ? "s" : ""
         } since your last conversation. The user just started a new conversation!`;
     } else {
         // If more than a day
         const days = Math.round(timeDiffMinutes / (60 * 24));
-        return `Welcome the user back after ${days} day${
+        systemFirstMessage = `Welcome the user back after ${days} day${
             days > 1 ? "s" : ""
         }! It's been a while since your last conversation.`;
     }
+
+    return systemFirstMessage + firstMessagePrompt;
 };
 
 export const createSystemPrompt = (

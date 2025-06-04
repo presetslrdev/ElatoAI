@@ -123,6 +123,7 @@ declare global {
         short_description: string;
         character_prompt: string;
         voice_prompt: string;
+        first_message_prompt: string;
         creator_id: string | null;
         pitch_factor: number;
     }
