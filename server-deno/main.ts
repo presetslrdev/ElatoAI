@@ -16,7 +16,6 @@ import {
     createSystemPrompt,
     getChatHistory,
     getDeviceInfo,
-    getOpenAiApiKey,
     getSupabaseClient,
     updateUserSessionTime,
 } from "./supabase.ts";
