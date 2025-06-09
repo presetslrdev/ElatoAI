@@ -7,7 +7,7 @@ Realtime AI Speech powered by OpenAI Realtime API, ESP32, Secure WebSockets, and
 
 <div align="center">
 
-[![Discord](https://img.shields.io/badge/Discord-80_members-5865F2?style=flat&logo=discord&logoColor=white)](https://discord.gg/KJWxDPBRUj)
+[![Discord](https://img.shields.io/badge/Discord-81_members-5865F2?style=flat&logo=discord&logoColor=white)](https://discord.gg/KJWxDPBRUj)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](https://opensource.org/licenses/MIT)
 ![Node.js](https://img.shields.io/badge/Node.js-22.13.0-yellow.svg)
 ![Next.js](https://img.shields.io/badge/Next.js-14.2.7-brightgreen.svg)
@@ -170,6 +170,7 @@ ElatoAI consists of three main components:
 19. **No PSRAM Required**: The ESP32 device does not require PSRAM to run the speech to speech AI.
 20. **OAuth for Web client**: OAuth for your users to manage their AI characters and devices.
 21. **Pitch Factor**: Control the pitch of the AI's voice from the NextJS webapp to create cartoon-like voices.
+22. **Tool calling**: Call tools from the ESP32 device to the Deno Edge Functions for a complete voice AI agent.
 
 ## 🛠 Tech Stack
 
@@ -266,7 +267,10 @@ lib_deps =
 
 1. Looking for Speech Interruption detection on ESP32
 2. Adding Arduino IDE support
-3. Adding tool calling support on Deno Edge
+3. Add Hume API client for emotion detection
+4. Add MCP support on Deno Edge
+5. Plug in ElevenLabs API for voice generation
+6. Add Azure OpenAI Support (easy pickings)
 
 We welcome contributions
 - Fork this repository.
