@@ -8,8 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, ArrowRight, Check, Mic, Volume2 } from "lucide-react";
-import Twemoji from "react-twemoji";
+import { ArrowLeft, ArrowRight, Check, Volume2 } from "lucide-react";
 import { createPersonality } from "@/db/personalities";
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from "@/components/ui/use-toast";
@@ -26,6 +25,7 @@ interface SettingsDashboardProps {
 }
 
 const formSchema = z.object({
+  provider: z.enum(["openai", "gemini"]),
   title: z.string().min(2, "Minimum 2 characters").max(50, "Maximum 50 characters"),
   description: z.string().min(50, "Minimum 50 characters").max(200, "Maximum 200 characters"),
   prompt: z.string().min(100, "Minimum 100 characters").max(1000, "Maximum 1000 characters"),
@@ -49,6 +49,7 @@ const SettingsDashboard: React.FC<SettingsDashboardProps> = ({
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [formData, setFormData] = useState({
+        provider: 'openai' as ModelProvider,
         title: '',
         description: '',
         prompt: '',
@@ -63,10 +64,8 @@ const SettingsDashboard: React.FC<SettingsDashboardProps> = ({
 
       const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
 
-
       const [formErrors, setFormErrors] = useState<Partial<Record<keyof FormData | 'features', string>>>({});
 
-      
       const [previewingVoice, setPreviewingVoice] = useState<string | null>(null);
     
       const handleBlur = (field: keyof FormData | 'features') => {
@@ -167,6 +166,7 @@ const SettingsDashboard: React.FC<SettingsDashboardProps> = ({
 
     try {
       const personality = await createPersonality(supabase, selectedUser.user_id, {
+        provider: formData.provider,
         title: formData.title,
         subtitle: "",
         character_prompt: formData.prompt,
