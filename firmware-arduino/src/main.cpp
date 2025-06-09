@@ -10,9 +10,8 @@
 #include "FactoryReset.h"
 
 #define TOUCH_THRESHOLD 28000
-#define LONG_PRESS_MS 1000
 #define REQUIRED_RELEASE_CHECKS 100     // how many consecutive times we need "below threshold" to confirm release
-#define TOUCH_DEBOUNCE_DELAY 1000 // milliseconds
+#define TOUCH_DEBOUNCE_DELAY 500 // milliseconds
 
 AsyncWebServer webServer(80);
 WIFIMANAGER WifiManager;
@@ -67,6 +66,13 @@ void enterSleep()
     delay(1000);
 }
 
+void processSleepRequest() {
+    if (sleepRequested) {
+        sleepRequested = false;
+        enterSleep();  // Just call it directly - no state checking needed
+    }
+}
+
 void printOutESP32Error(esp_err_t err)
 {
     switch (err)
@@ -90,14 +96,14 @@ static void onButtonLongPressUpEventCb(void *button_handle, void *usr_data)
 {
     Serial.println("Button long press end");
     delay(10);
-    enterSleep();
+    sleepRequested = true;
 }
 
 static void onButtonDoubleClickCb(void *button_handle, void *usr_data)
 {
     Serial.println("Button double click");
     delay(10);
-    enterSleep();
+    sleepRequested = true;
 }
 
 void getAuthTokenFromNVS()
@@ -149,7 +155,7 @@ void touchTask(void* parameter) {
     // Check for long press while touched
     if (touched && isTouched) {
       if (currentTime - pressStartTime >= LONG_PRESS_DURATION) {
-        enterSleep();  // Only enter sleep after 500ms of continuous touch
+        sleepRequested = true;  // Only enter sleep after 500ms of continuous touch
       }
     }
 
@@ -247,6 +253,7 @@ void setup()
 }
 
 void loop(){
+    processSleepRequest();
     if (otaState == OTA_IN_PROGRESS)
     {
         loopOTA();

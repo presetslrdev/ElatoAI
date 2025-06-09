@@ -92,9 +92,12 @@ extern const int I2S_DATA_OUT;
 extern const i2s_port_t I2S_PORT_OUT;
 extern const int I2S_SD_OUT;
 
+extern volatile bool sleepRequested;
+
 // SSL certificate
 extern const char *CA_cert;
 extern const char *Vercel_CA_cert;
 void factoryResetDevice();
+void processSleepRequest();
 
 #endif

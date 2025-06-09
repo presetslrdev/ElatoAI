@@ -21,21 +21,6 @@ import {
 } from "./supabase.ts";
 import { SupabaseClient } from "@supabase/supabase-js";
 
-// import { Opus, OpusApplication } from 'https://deno.land/x/opus@0.1.1/opus.ts';
-
-// await Opus.load(); // Make sure the Opus module is loaded
-
-// // Define your audio parameters (adjust as needed)
-// const SAMPLE_RATE = 24000; // e.g., 48000 Hz
-// const CHANNELS = 1; // Stereo (change to 1 if using mono)
-// const FRAME_DURATION = 20; // Frame length in ms
-
-// // Calculate the number of samples per frame
-// const frameSize = (SAMPLE_RATE * FRAME_DURATION) / 1000;
-
-// // Create a global encoder instance (reuse this for every audio delta)
-// const encoder = new Opus(SAMPLE_RATE, CHANNELS, OpusApplication.AUDIO);
-
 import { Encoder } from "@evan/opus";
 
 const isDev = Deno.env.get("DEV_MODE") === "True";
@@ -46,9 +31,6 @@ const CHANNELS = 1; // Mono (set to 2 if you have stereo)
 const FRAME_DURATION = 120; // Frame length in ms
 
 const BYTES_PER_SAMPLE = 2; // 16-bit PCM: 2 bytes per sample
-// Calculate the number of bytes per frame:
-// samples = SAMPLE_RATE * FRAME_DURATION / 1000
-// bytes = samples * CHANNELS * BYTES_PER_SAMPLE
 const FRAME_SIZE = (SAMPLE_RATE * FRAME_DURATION / 1000) * CHANNELS *
     BYTES_PER_SAMPLE; // 960 bytes for 24000 Hz mono 16-bit
 
@@ -115,7 +97,7 @@ wss.on("connection", async (ws: WSWebSocket, payload: IPayload) => {
     ws.send(
         JSON.stringify({
             type: "auth",
-            volume_control: user.device?.volume ?? 100,
+            volume_control: user.device?.volume ?? 20,
             is_ota: user.device?.is_ota ?? false,
             is_reset: user.device?.is_reset ?? false,
             pitch_factor: user.personality?.pitch_factor ?? 1,
@@ -135,10 +117,59 @@ wss.on("connection", async (ws: WSWebSocket, payload: IPayload) => {
     const systemPrompt = createSystemPrompt(chatHistory, payload);
     let sessionStartTime: number;
     let currentItemId: string | null = null;
+    let currentCallId: string | null = null;
 
     // Instantiate new client
     console.log(`Connecting with key "${openaiApiKey.slice(0, 3)}..."`);
     const client = new RealtimeClient({ apiKey: openaiApiKey });
+
+    // ADD TOOL CALLS HERE
+    client.addTool(
+        {
+            type: "function",
+            name: "end_session",
+            description:
+                'Call this if the user says bye or needs to leave or suggests they want to end the session. (e.g. "I gotta to go", "I have to work", "I have to sleep", "I have to do something else")',
+            parameters: {
+                type: "object",
+                strict: true,
+                properties: {
+                    reason: {
+                        type: "string",
+                        description:
+                            'Short reason for ending the session.',
+                    },
+                },
+                required: ["reason"],
+            },
+        },
+        (args: any) => {
+            console.log("end session", args);
+
+            // Send your custom message to the client
+            ws.send(JSON.stringify({ type: "server", msg: "SESSION.END" }));
+
+            // Send the function result back to OpenAI
+            const functionResult = {
+                event_id: RealtimeUtils.generateId("evt_"),
+                type: "conversation.item.create",
+                item: {
+                    id: RealtimeUtils.generateId("item_"),
+                    type: "function_call_output",
+                    call_id: currentCallId,
+                    output: JSON.stringify({
+                        success: true,
+                        message: `Session ended: ${args.reason}`,
+                    }),
+                },
+            };
+
+            client.realtime.send(functionResult.type, functionResult);
+
+            // Return the result for the callback
+            return { success: true, message: `Session ended: ${args.reason}` };
+        },
+    );
 
     // Relay: OpenAI Realtime API Event -> Browser Event
     client.realtime.on("server.*", async (event: any) => {
@@ -196,8 +227,6 @@ wss.on("connection", async (ws: WSWebSocket, payload: IPayload) => {
 
         if (event.type in client.conversation.EventProcessors) {
             try {
-                const { delta } = client.conversation.processEvent(event);
-
                 switch (event.type) {
                     case "response.created":
                         console.log("response.created", event);
@@ -213,10 +242,14 @@ wss.on("connection", async (ws: WSWebSocket, payload: IPayload) => {
                         if (event.item.id) {
                             console.log("foobar", event.item.id);
                             currentItemId = event.item.id;
+                            currentCallId = event.item.call_id;
                         }
                         break;
                     case "response.audio.delta":
                         {
+                            const { delta } = client.conversation.processEvent(
+                                event,
+                            );
                             try {
                                 if (delta?.audio?.buffer) {
                                     const pcmBuffer = Buffer.from(
@@ -401,7 +434,7 @@ wss.on("connection", async (ws: WSWebSocket, payload: IPayload) => {
             instructions: systemPrompt,
             input_audio_transcription: { model: "whisper-1" },
         };
-        await client.connect(sessionOptions);
+        await client.connect(sessionOptions as any);
     } catch (e: unknown) {
         console.log(`Error connecting to OpenAI: ${e as Error}`);
         ws.close();

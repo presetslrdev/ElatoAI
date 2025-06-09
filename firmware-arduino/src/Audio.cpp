@@ -332,7 +332,10 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
             } else if (strcmp((char*)msg.c_str(), "RESPONSE.CREATED") == 0) {
                 Serial.println("Received RESPONSE.CREATED, transitioning to speaking");
                 transitionToSpeaking();
-            } 
+            } else if (strcmp((char*)msg.c_str(), "SESSION.END") == 0) {
+                Serial.println("Received SESSION.END, going to sleep");
+                sleepRequested = true;
+            }
         }
     }
         break;
