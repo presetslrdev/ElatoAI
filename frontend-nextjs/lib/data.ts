@@ -38,24 +38,6 @@ export const DEVICE_COST = 55;
 export const ORIGINAL_COST = 111;
 export const SUBSCRIPTION_COST = 10;
 
-export type VoiceType =
-    | {
-        provider: "openai";
-        id: OaiVoice;
-        name: string;
-        description: string;
-        color: string;
-        emoji?: string;
-    }
-    | {
-        provider: "gemini";
-        id: GeminiVoice;
-        name: string;
-        description: string;
-        color: string;
-        emoji?: string;
-    };
-
 export const openaiVoices: VoiceType[] = [
     {
         id: "alloy",

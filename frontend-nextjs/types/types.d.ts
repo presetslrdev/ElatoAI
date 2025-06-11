@@ -98,6 +98,24 @@ declare global {
         is_sensitive: boolean;
     }
 
+    type VoiceType =
+        | {
+            provider: "openai";
+            id: OaiVoice;
+            name: string;
+            description: string;
+            color: string;
+            emoji?: string;
+        }
+        | {
+            provider: "gemini";
+            id: GeminiVoice;
+            name: string;
+            description: string;
+            color: string;
+            emoji?: string;
+        };
+
     type ModelProvider = "openai" | "gemini";
 
     type GeminiVoice =

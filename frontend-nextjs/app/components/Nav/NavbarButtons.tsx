@@ -3,7 +3,6 @@ import { User } from "@supabase/supabase-js";
 import Link from "next/link";
 import { businessDemoLink, githubPublicLink } from "@/lib/data";
 import { Separator } from "@/components/ui/separator";
-import PreorderButton from "../PreorderButton";
 import { NavbarDropdownMenu } from "./NavbarDropdownMenu";
 import { FaGithub } from "react-icons/fa";
 import PremiumBadge from "../PremiumBadge";

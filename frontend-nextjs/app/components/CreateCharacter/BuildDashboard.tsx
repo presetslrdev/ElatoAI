@@ -14,7 +14,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
-import { emotionOptions, geminiVoices, openaiVoices, r2UrlAudio, VoiceType } from "@/lib/data";
+import { emotionOptions, geminiVoices, openaiVoices, r2UrlAudio } from "@/lib/data";
 import EmojiComponent from "./EmojiComponent";
 import { PitchFactors } from "@/lib/utils";
 import { Slider } from "@/components/ui/slider";
