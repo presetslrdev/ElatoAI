@@ -2,7 +2,7 @@
 
 # 🚀 ElatoAI: Realtime Speech AI Agents for ESP32
 
-Realtime AI Speech powered by OpenAI Realtime API, ESP32, Secure WebSockets, and Deno Edge Functions for >15-minute uninterrupted global conversations
+Realtime AI Speech powered by **OpenAI Realtime API** and **Gemini Live API**, ESP32, Secure WebSockets, and Deno Edge Functions for >15-minute uninterrupted global conversations
 
 
 <div align="center">
@@ -29,7 +29,17 @@ Realtime AI Speech powered by OpenAI Realtime API, ESP32, Secure WebSockets, and
 
 </div>
 
-## ⚡️ DIY Hardware Design
+## ⚡️ Realtime AI Speech Models on an ESP32
+
+<div align="center" class="flex flex-row gap-4">
+
+<img src="assets/openai.png" alt="OpenAI Realtime API" width="45%">
+
+<img src="assets/gemini.png" alt="Gemini Live API" width="45%">
+
+</div>
+
+## 👷‍♀️ DIY Hardware Design
 
 <img src="assets/pcb-design.png" alt="Hardware Setup" width="100%">
 
@@ -102,6 +112,7 @@ cp .env.example .env
 # In .env, set your environment variables 
 # SUPABASE_KEY=<your-supabase-anon-key>
 # OPENAI_API_KEY=<your-openai-api-key>
+# GEMINI_API_KEY=<your-gemini-api-key>
 
 # Run the server at port 8000
 deno run -A --env-file=.env main.ts
@@ -143,13 +154,13 @@ Once your Wifi credentials are configured, turn the device off and on again and 
 ElatoAI consists of three main components:
 
 1. **Frontend Client** (`Next.js` hosted on Vercel) - to create and talk to your AI agents and 'send' it to your ESP32 device
-2. **Edge Server Functions** (`Deno` running on Deno/Supabase Edge) - to handle the websocket connections from the ESP32 device and the OpenAI API calls
-3. **ESP32 IoT Client** (`PlatformIO/Arduino`) - to receive the websocket connections from the Edge Server Functions and send audio to the OpenAI API via the Deno edge server.
+2. **Edge Server Functions** (`Deno` running on Deno/Supabase Edge) - to handle the websocket connections from the ESP32 device and the OpenAI and Gemini API calls
+3. **ESP32 IoT Client** (`PlatformIO/Arduino`) - to receive the websocket connections from the Edge Server Functions and send audio to the OpenAI and Gemini API via the Deno edge server.
 
 
 ## 🌟 Features
 
-1. **Realtime Speech-to-Speech**: Instant speech conversion powered by OpenAI's Realtime APIs.
+1. **Realtime Speech-to-Speech**: Instant speech conversion powered by OpenAI's Realtime API and Gemini's Live API.
 2. **Create Custom AI Agents**: Create custom agents with different personalities and voices.
 3. **Customizable Voices**: Choose from a variety of voices and personalities.
 4. **Secure WebSockets**: Reliable, encrypted WebSocket communication.
@@ -200,7 +211,9 @@ flowchart TD
   UserInput --> ESP32
   ESP32[ESP32 Device] -->|WebSocket| Edge[Deno Edge Function]
   Edge -->|OpenAI API| OpenAI[OpenAI Realtime API]
+  Edge -->|Gemini API| Gemini[Gemini Live API]
   OpenAI --> Edge
+  Gemini --> Edge
   Edge -->|WebSocket| ESP32
   ESP32 --> UserOutput
 ```

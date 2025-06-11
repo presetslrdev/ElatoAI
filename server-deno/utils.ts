@@ -3,6 +3,33 @@ import { getUserByEmail } from "./supabase.ts";
 import { SupabaseClient } from "@supabase/supabase-js";
 import crypto from "node:crypto";
 import { Buffer } from "node:buffer";
+import { Encoder } from "@evan/opus";
+
+export const defaultVolume = 50;
+
+// Define your audio parameters
+export const SAMPLE_RATE = 24000; // For example, 24000 Hz
+const CHANNELS = 1; // Mono (set to 2 if you have stereo)
+const FRAME_DURATION = 120; // Frame length in ms
+const BYTES_PER_SAMPLE = 2; // 16-bit PCM: 2 bytes per sample
+const FRAME_SIZE = (SAMPLE_RATE * FRAME_DURATION / 1000) * CHANNELS *
+    BYTES_PER_SAMPLE; // 960 bytes for 24000 Hz mono 16-bit
+
+const encoder = new Encoder({
+    channels: CHANNELS,
+    sample_rate: SAMPLE_RATE,
+    application: "voip",
+});
+
+encoder.expert_frame_duration = FRAME_DURATION;
+encoder.bitrate = 12000;
+
+export const openaiApiKey = Deno.env.get("OPENAI_API_KEY");
+export const geminiApiKey = Deno.env.get("GEMINI_API_KEY");
+
+export { encoder, FRAME_SIZE };
+
+export const isDev = Deno.env.get("DEV_MODE") === "True";
 
 export const authenticateUser = async (
     supabaseClient: SupabaseClient,

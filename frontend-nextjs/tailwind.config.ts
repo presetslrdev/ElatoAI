@@ -10,6 +10,33 @@ const config = {
         "./src/**/*.{ts,tsx}",
     ],
     prefix: "",
+    safelist: [
+        // Voice background colors
+        "bg-blue-100",
+        "bg-purple-100",
+        "bg-cyan-100",
+        "bg-gray-100",
+        "bg-indigo-100",
+        "bg-orange-100",
+        "bg-green-100",
+        "bg-rose-100",
+        "bg-yellow-100",
+        "bg-red-100",
+        "bg-pink-100",
+        "bg-slate-100",
+        "bg-sky-100",
+        "bg-amber-100",
+        "bg-white",
+        "bg-emerald-100",
+        "bg-violet-100",
+        "bg-neutral-100",
+        "bg-stone-100",
+        "bg-lime-100",
+        "bg-zinc-100",
+        "bg-teal-100",
+        "bg-brown-100",
+        "bg-fuchsia-100",
+    ],
     theme: {
         container: {
             center: true,
@@ -98,8 +125,10 @@ const config = {
                     "infinite-scroll-inverse 60s linear infinite",
             },
             boxShadow: {
-                cool: "0 4px 6px rgba(135, 206, 235, 0.2), 0 8px 24px rgba(70, 130, 180, 0.5)",
-                tron: "0 4px 6px rgba(255, 215, 0, 0.2), 0 8px 24px rgba(218, 165, 32, 0.5)",
+                cool:
+                    "0 4px 6px rgba(135, 206, 235, 0.2), 0 8px 24px rgba(70, 130, 180, 0.5)",
+                tron:
+                    "0 4px 6px rgba(255, 215, 0, 0.2), 0 8px 24px rgba(218, 165, 32, 0.5)",
                 custom_focus: "0 0 20px rgba(0, 0, 0, 0.25)", // Custom shadow
                 custom_unfocus: "0 0 8px rgba(0, 0, 0, 0.07)", // Custom shadow
             },

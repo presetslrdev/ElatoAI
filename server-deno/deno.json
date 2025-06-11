@@ -18,6 +18,9 @@
       "proseWrap": "preserve"
     }
   },
+  "compilerOptions": {
+    "lib": ["deno.window", "deno.ns"]
+  },
   "lint": {
     "files": {
       "include": ["./**/*.ts"],

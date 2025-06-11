@@ -12,6 +12,7 @@ import { useState } from "react";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { getPersonalityImageSrc } from "@/lib/utils";
 import { EmojiComponent } from "./EmojiImage";
+import { Badge } from "@/components/ui/badge";
 
 interface ModifyCharacterSheetProps {
     openPersonality: IPersonality;
@@ -111,7 +112,12 @@ const ModifyCharacterSheet: React.FC<ModifyCharacterSheetProps> = ({
                             />
                         </div>
                     )}
-                    <div className="space-y-2 text-left w-full">
+                    <div className="space-y-2 text-left w-full relative">
+                    <div className="absolute top-0 right-0">
+                    <Badge variant="outline">
+                        {openPersonality.provider}
+                    </Badge>
+                </div>
                     <div className="flex flex-row items-center gap-2">
                         <h3 className="text-xl font-semibold">
                             {openPersonality.title}

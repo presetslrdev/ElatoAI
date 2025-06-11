@@ -2,16 +2,16 @@
 
 import { Volume2 } from "lucide-react";
 import { Label } from "@/components/ui/label";
-import { emotionOptions, r2UrlAudio, voices } from "@/lib/data";
+import { emotionOptions, r2UrlAudio, openaiVoices } from "@/lib/data";
 import EmojiComponent from "../CreateCharacter/EmojiComponent";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 
 export const VoiceSettings = () => {
 	const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null);
-	const [previewingVoice, setPreviewingVoice] = useState<string | null>(null);
+	const [previewingVoice, setPreviewingVoice] = useState<OaiVoice | null>(null);
     
-	const previewVoice = (voiceId: string) => {
+	const previewVoice = (voiceId: OaiVoice) => {
 		  // If the same voice is clicked again while playing, pause it
 		  if (previewingVoice === voiceId && audioElement) {
 			audioElement.pause();
@@ -55,18 +55,18 @@ export const VoiceSettings = () => {
 	<div className="space-y-2">
 	<Label htmlFor="voice">Pick a voice</Label>
 	<div className="grid grid-cols-2 gap-3">
-	  {voices.map((voice) => (
+	  {openaiVoices.map((voice) => (
 		<div 
 		key={voice.id}
 		className={`
 		  rounded-lg border p-3 transition-all relative
-		  ${"" === voice.id 
+		  ${voice.id === previewingVoice 
 			? 'border-2 border-blue-500 shadow-sm ' + voice.color 
 			: 'border-gray-200 hover:border-gray-300 cursor-pointer'
 		  }
 		`}
 		onClick={() => {
-			previewVoice(voice.id);
+			previewVoice(voice.id as OaiVoice);
 		}}
 	  >
 		<div className="flex flex-col">

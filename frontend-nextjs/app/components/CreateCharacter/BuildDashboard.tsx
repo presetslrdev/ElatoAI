@@ -8,14 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, ArrowRight, Check, Mic, Volume2 } from "lucide-react";
-import Twemoji from "react-twemoji";
+import { ArrowLeft, ArrowRight, Check, Volume2 } from "lucide-react";
 import { createPersonality } from "@/db/personalities";
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
-import { emotionOptions, r2UrlAudio, voices } from "@/lib/data";
+import { emotionOptions, geminiVoices, openaiVoices, r2UrlAudio, VoiceType } from "@/lib/data";
 import EmojiComponent from "./EmojiComponent";
 import { PitchFactors } from "@/lib/utils";
 import { Slider } from "@/components/ui/slider";
@@ -26,6 +25,7 @@ interface SettingsDashboardProps {
 }
 
 const formSchema = z.object({
+  provider: z.enum(["openai", "gemini"]),
   title: z.string().min(2, "Minimum 2 characters").max(50, "Maximum 50 characters"),
   description: z.string().min(50, "Minimum 50 characters").max(200, "Maximum 200 characters"),
   prompt: z.string().min(100, "Minimum 100 characters").max(1000, "Maximum 1000 characters"),
@@ -49,6 +49,7 @@ const SettingsDashboard: React.FC<SettingsDashboardProps> = ({
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [formData, setFormData] = useState({
+        provider: 'openai' as ModelProvider,
         title: '',
         description: '',
         prompt: '',
@@ -63,10 +64,8 @@ const SettingsDashboard: React.FC<SettingsDashboardProps> = ({
 
       const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
 
-
       const [formErrors, setFormErrors] = useState<Partial<Record<keyof FormData | 'features', string>>>({});
 
-      
       const [previewingVoice, setPreviewingVoice] = useState<string | null>(null);
     
       const handleBlur = (field: keyof FormData | 'features') => {
@@ -167,6 +166,7 @@ const SettingsDashboard: React.FC<SettingsDashboardProps> = ({
 
     try {
       const personality = await createPersonality(supabase, selectedUser.user_id, {
+        provider: formData.provider as ModelProvider,
         title: formData.title,
         subtitle: "",
         character_prompt: formData.prompt,
@@ -206,15 +206,18 @@ const SettingsDashboard: React.FC<SettingsDashboardProps> = ({
       const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null);
 
     
-      const previewVoice = (voiceId: string) => {
+      const previewVoice = (voice: VoiceType) => {
+        const { id, provider } = voice;
+
+        if (provider === 'openai') {
         // Stop any currently playing preview
         if (audioElement) {
           audioElement.pause();
           audioElement.currentTime = 0;
         }
         
-        const audioSampleUrl = `${r2UrlAudio}/${voiceId}.wav`;
-        setPreviewingVoice(voiceId);
+        const audioSampleUrl = `${r2UrlAudio}/${id}.wav`;
+        setPreviewingVoice(id);
         
         // Create and play audio element
         const audio = new Audio(audioSampleUrl);
@@ -233,11 +236,12 @@ const SettingsDashboard: React.FC<SettingsDashboardProps> = ({
         
         // Fallback in case audio doesn't trigger onended
         setTimeout(() => {
-          if (previewingVoice === voiceId) {
+          if (previewingVoice === id) {
             setPreviewingVoice(null);
           }
         }, 10000); // 10 second fallback
-      };
+      }
+    }
 
     const Heading = () => {
         return (
@@ -260,51 +264,70 @@ const SettingsDashboard: React.FC<SettingsDashboardProps> = ({
       {currentStep === 'personality' ? 
        <div className="space-y-4">
        {/* Voice Picker */}
- <div className="space-y-2">
- <Label htmlFor="voice">Pick a voice</Label>
- <p className="text-sm text-gray-500">
- Click a voice to preview how it sounds.
- </p>
- 
- <div className="grid grid-cols-3 gap-3">
- {voices.map((voice) => (
- <div
- key={voice.id}
- className={`
-   relative rounded-lg border p-3 transition-all
-   ${formData.voice === voice.id
-     ? 'border-2 border-blue-500 shadow-sm ' + voice.color
-     : 'border-gray-200 hover:border-gray-300 cursor-pointer'
-   }
- `}
- onClick={() => {
-   handleInputChange('voice', voice.id);
-   previewVoice(voice.id);
- }}
- >
- <div className="flex flex-col">
-   <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3">
-     <div className="text-2xl mt-0.5">
-       <EmojiComponent emoji={voice.emoji} />
-     </div>
-     <div className="flex flex-col text-center sm:text-left">
-       <span className="font-medium">{voice.name}</span>
-       <span className="text-xs text-gray-600">{voice.description}</span>
-     </div>
-   </div>
- 
-   {previewingVoice === voice.id && (
-     <div className="absolute top-2 right-2">
-       <div className="animate-pulse text-blue-500">
-         <Volume2 size={20} />
-       </div>
-     </div>
-   )}
- </div>
- </div>
- ))}
- </div>
- </div>
+       <div className="space-y-4">
+<Label htmlFor="voice">Pick a voice</Label>
+<p className="text-sm text-gray-500">
+Click a voice to preview how it sounds.
+</p>
+
+<div className="grid grid-cols-3 gap-3 px-2">
+{[...openaiVoices, ...geminiVoices].map((voice: VoiceType) => (
+<div
+key={voice.id}
+className={`
+  relative rounded-xl border-2 p-4 transition-all cursor-pointer hover:scale-[1.02] hover:shadow-lg
+  ${formData.voice === voice.id
+    ? `border-blue-500 shadow-lg ${voice.color} ring-2 ring-blue-200`
+    : `border-gray-200 hover:border-gray-300 ${voice.color} hover:shadow-md`
+  }
+`}
+onClick={() => {
+  setFormData(prev => ({
+    ...prev,
+    provider: voice.provider as ModelProvider,
+    voice: voice.id
+  }));
+  previewVoice(voice);
+}}
+>
+<div className="flex flex-col">
+  <div className="flex flex-col items-center gap-3">
+    <div className="text-3xl">
+      <EmojiComponent emoji={voice.emoji} />
+    </div>
+    <div className="flex flex-col text-center">
+      <span className="font-semibold text-gray-900">{voice.name}</span>
+      <span className="text-xs text-gray-600 mt-1">{voice.description}</span>
+      <div className={`inline-flex items-center justify-center px-2 py-1 rounded-full text-xs font-medium mt-2 ${
+        voice.provider === 'openai' 
+          ? 'bg-emerald-500 text-white' 
+          : 'bg-purple-500 text-white'
+      }`}>
+        {voice.provider === 'openai' ? 'OpenAI' : 'Gemini'}
+      </div>
+    </div>
+  </div>
+
+  {previewingVoice === voice.id && (
+    <div className="absolute top-3 right-3">
+      <div className="animate-pulse text-blue-600 bg-white rounded-full p-2 shadow-lg">
+        <Volume2 size={16} />
+      </div>
+    </div>
+  )}
+  
+  {formData.voice === voice.id && (
+    <div className="absolute -top-2 -right-2">
+      <div className="bg-blue-500 text-white rounded-full p-1.5 shadow-lg">
+        <Check size={12} />
+      </div>
+    </div>
+  )}
+</div>
+</div>
+))}
+</div>
+</div>
  
  <div className="space-y-2">
  <Label htmlFor="title">Title</Label>

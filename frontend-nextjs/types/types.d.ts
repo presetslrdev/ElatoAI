@@ -98,7 +98,39 @@ declare global {
         is_sensitive: boolean;
     }
 
-    type TTSModel = "FISH" | "AZURE";
+    type ModelProvider = "openai" | "gemini";
+
+    type GeminiVoice =
+        | "Zephyr"
+        | "Puck"
+        | "Charon"
+        | "Kore"
+        | "Fenrir"
+        | "Leda"
+        | "Orus"
+        | "Aoede"
+        | "Callirrhoe"
+        | "Autonoe"
+        | "Enceladus"
+        | "Iapetus"
+        | "Umbriel"
+        | "Algieba"
+        | "Despina"
+        | "Erinome"
+        | "Algenib"
+        | "Rasalgethi"
+        | "Laomedeia"
+        | "Achernar"
+        | "Alnilam"
+        | "Schedar"
+        | "Gacrux"
+        | "Pulcherrima"
+        | "Achird"
+        | "Zubenelgenubi"
+        | "Vindemiatrix"
+        | "Sadachbia"
+        | "Sadaltager"
+        | "Sulafat";
 
     type OaiVoice =
         | "ash"
@@ -117,7 +149,8 @@ declare global {
         is_child_voice: boolean;
         is_story: boolean;
         key: string;
-        oai_voice: OaiVoice;
+        oai_voice: OaiVoice | GeminiVoice;
+        provider: ModelProvider;
         title: string;
         subtitle: string;
         short_description: string;
