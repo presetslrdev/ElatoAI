@@ -43,6 +43,19 @@ wss.on("connection", async (ws: WSWebSocket, payload: IPayload) => {
     const systemPrompt = createSystemPrompt(chatHistory, payload);
 
     const provider = user.personality?.provider;
+
+    // send user details to client
+    // when DEV_MODE is true, we send the default values 100, false, false
+    ws.send(
+        JSON.stringify({
+            type: "auth",
+            volume_control: user.device?.volume ?? 20,
+            is_ota: user.device?.is_ota ?? false,
+            is_reset: user.device?.is_reset ?? false,
+            pitch_factor: user.personality?.pitch_factor ?? 1,
+        }),
+    );
+
     switch (provider) {
         case "openai":
             await connectToOpenAI(

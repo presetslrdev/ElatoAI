@@ -19,28 +19,7 @@ export const connectToGemini = async (
 	systemPrompt: string,
 ) => {
 	const { user, supabase } = payload;
-	const { oai_voice, pitch_factor } = user.personality ?? {
-		oai_voice: "Sadachbia",
-		provider: "gemini",
-		pitch_factor: 1,
-	};
-
-	const { is_ota, is_reset, volume } = user.device ?? {
-		is_ota: false,
-		is_reset: false,
-		volume: 10,
-	};
-
-	// Send user details to client
-	ws.send(
-		JSON.stringify({
-			type: "auth",
-			volume_control: volume,
-			is_ota: is_ota,
-			is_reset: is_reset,
-			pitch_factor: pitch_factor,
-		}),
-	);
+	const { oai_voice } = user.personality ?? { oai_voice: "Sadachbia" };
 
 	console.log(`Connecting with Gemini key "${geminiApiKey.slice(0, 3)}..."`);
 
@@ -60,7 +39,7 @@ export const connectToGemini = async (
 		realtimeInputConfig: {
 			automaticActivityDetection: {
 				disabled: false, // Keep VAD enabled
-				endOfSpeechSensitivity: EndSensitivity.END_SENSITIVITY_HIGH, // How sensitive to detect speech ending
+				endOfSpeechSensitivity: EndSensitivity.END_SENSITIVITY_LOW, // How sensitive to detect speech ending
 				silenceDurationMs: 100, // How much silence before considering speech ended
 			},
 		},
@@ -104,14 +83,14 @@ export const connectToGemini = async (
 					done = true;
 				}
 
-				if (message.serverContent.turnComplete) {
-					ws.send(
-						JSON.stringify({
-							type: "server",
-							msg: "AUDIO.COMMITTED",
-						}),
-					);
-				}
+				// if (message.serverContent.turnComplete) {
+				// 	ws.send(
+				// 		JSON.stringify({
+				// 			type: "server",
+				// 			msg: "AUDIO.COMMITTED",
+				// 		}),
+				// 	);
+				// }
 			}
 		}
 		return turns;
