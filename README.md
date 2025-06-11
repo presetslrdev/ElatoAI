@@ -15,6 +15,17 @@ Realtime AI Speech powered by **OpenAI Realtime API** and **Gemini Live API**, E
 
 </div>
 
+## ⚡️ Realtime AI Speech Models on an ESP32
+
+<div align="center" class="flex flex-row gap-4">
+
+<img src="assets/openai.png" alt="OpenAI Realtime API" width="45%">
+
+<img src="assets/gemini.png" alt="Gemini Live API" width="45%">
+
+</div>
+
+
 ## 📽️ Demo Video
 
 <div align="center">
@@ -26,16 +37,6 @@ Realtime AI Speech powered by **OpenAI Realtime API** and **Gemini Live API**, E
 [Homepage](https://elatoai.com/) | [Buy AI device](https://www.elatoai.com/products) | [Buy AI Dev Kit](https://www.elatoai.com/products/ai-devkit)
 
 </h3>
-
-</div>
-
-## ⚡️ Realtime AI Speech Models on an ESP32
-
-<div align="center" class="flex flex-row gap-4">
-
-<img src="assets/openai.png" alt="OpenAI Realtime API" width="45%">
-
-<img src="assets/gemini.png" alt="Gemini Live API" width="45%">
 
 </div>
 
