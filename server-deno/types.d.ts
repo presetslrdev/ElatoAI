@@ -26,21 +26,58 @@ declare global {
         user_code: string;
     }
 
+    type ModelProvider = "openai" | "gemini";
+
+    type GeminiVoice =
+        | "Zephyr"
+        | "Puck"
+        | "Charon"
+        | "Kore"
+        | "Fenrir"
+        | "Leda"
+        | "Orus"
+        | "Aoede"
+        | "Callirrhoe"
+        | "Autonoe"
+        | "Enceladus"
+        | "Iapetus"
+        | "Umbriel"
+        | "Algieba"
+        | "Despina"
+        | "Erinome"
+        | "Algenib"
+        | "Rasalgethi"
+        | "Laomedeia"
+        | "Achernar"
+        | "Alnilam"
+        | "Schedar"
+        | "Gacrux"
+        | "Pulcherrima"
+        | "Achird"
+        | "Zubenelgenubi"
+        | "Vindemiatrix"
+        | "Sadachbia"
+        | "Sadaltager"
+        | "Sulafat";
+
+    type OaiVoice =
+        | "ash"
+        | "alloy"
+        | "echo"
+        | "shimmer"
+        | "ballad"
+        | "coral"
+        | "sage"
+        | "verse";
+
     interface IPersonality {
         personality_id: string;
         is_doctor: boolean;
         is_child_voice: boolean;
         is_story: boolean;
         key: string;
-        oai_voice:
-            | "ash"
-            | "alloy"
-            | "echo"
-            | "shimmer"
-            | "ballad"
-            | "coral"
-            | "sage"
-            | "verse";
+        oai_voice: OaiVoice | GeminiVoice;
+        provider: ModelProvider;
         voice_description: string;
         title: string;
         subtitle: string;

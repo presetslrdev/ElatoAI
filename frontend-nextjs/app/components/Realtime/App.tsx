@@ -380,6 +380,7 @@ function App({ personalityIdState, isDoctor, userId }: AppProps) {
         sessionStatus={sessionStatus}
         onToggleConnection={onToggleConnection}
         isDoctor={isDoctor}
+        personality={personality}
       />
     </div>
   <SheetContent 

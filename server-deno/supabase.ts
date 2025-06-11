@@ -157,7 +157,6 @@ ${chatHistory}
 `;
 
 export const createFirstMessage = (
-    chatHistory: IConversation[],
     payload: IPayload,
 ): string => {
     const { timestamp, user } = payload;
@@ -216,21 +215,6 @@ export const addConversation = async (
     if (error) {
         throw new Error("Failed to add conversation");
     }
-};
-
-export const updateUserSessionTime = async (
-    supabase: SupabaseClient,
-    user: IUser,
-    sessionTime: number,
-): Promise<void> => {
-    const { error } = await supabase
-        .from("users")
-        .update({
-            session_time: user.session_time + sessionTime,
-        })
-        .eq("user_id", user.user_id);
-
-    if (error) throw error;
 };
 
 /**

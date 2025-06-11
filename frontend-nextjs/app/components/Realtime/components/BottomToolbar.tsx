@@ -8,12 +8,14 @@ interface BottomToolbarProps {
   sessionStatus: SessionStatus;
   onToggleConnection: () => void;
   isDoctor: boolean;
+  personality: IPersonality;
 }
 
 function BottomToolbar({
   sessionStatus,
   onToggleConnection,
   isDoctor,
+  personality,
 }: BottomToolbarProps) {
   const isConnected = sessionStatus === "CONNECTED";
   const isConnecting = sessionStatus === "CONNECTING";
@@ -36,7 +38,7 @@ function BottomToolbar({
     return "Doctor chat";
   }
 
-  const isDisabled = isConnecting;
+  const isDisabled = isConnecting || personality.provider === "gemini";
 
   function getConnectionButtonClasses() {
     const baseClasses = "text-white text-base p-2 w-fit rounded-full shadow-lg flex flex-row items-center justify-center gap-2 px-4";
@@ -72,7 +74,7 @@ function BottomToolbar({
           </TooltipTrigger>
           {isDisabled && (
             <TooltipContent>
-              <p>Add an API key in Settings to chat with your AI character.</p>
+              {personality.provider === "gemini" ? <p>Talk to Gemini on your Elato device.</p> : <p>Add an API key in Settings to chat with your AI character.</p>}
             </TooltipContent>
           )}
         </Tooltip>

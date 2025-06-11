@@ -5,7 +5,12 @@ import type {
     WebSocketServer as _WebSocketServer,
 } from "npm:@types/ws";
 import { authenticateUser } from "./utils.ts";
-import { getSupabaseClient } from "./supabase.ts";
+import {
+    createFirstMessage,
+    createSystemPrompt,
+    getChatHistory,
+    getSupabaseClient,
+} from "./supabase.ts";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { isDev } from "./utils.ts";
 import { connectToOpenAI } from "./models/openai.ts";
@@ -16,8 +21,50 @@ const server = createServer();
 const wss: _WebSocketServer = new WebSocketServer({ noServer: true });
 
 wss.on("connection", async (ws: WSWebSocket, payload: IPayload) => {
-    // await connectToOpenAI(ws, payload);
-    await connectToGemini(ws, payload);
+    const { user, supabase } = payload;
+
+    let connectionPcmFile: Deno.FsFile | null = null;
+    if (isDev) {
+        const filename = `debug_audio_${Date.now()}.pcm`;
+        connectionPcmFile = await Deno.open(filename, {
+            create: true,
+            write: true,
+            append: true,
+        });
+    }
+
+    const chatHistory = await getChatHistory(
+        supabase,
+        user.user_id,
+        user.personality?.key ?? null,
+        false,
+    );
+    const firstMessage = createFirstMessage(payload);
+    const systemPrompt = createSystemPrompt(chatHistory, payload);
+
+    const provider = user.personality?.provider;
+    switch (provider) {
+        case "openai":
+            await connectToOpenAI(
+                ws,
+                payload,
+                connectionPcmFile,
+                firstMessage,
+                systemPrompt,
+            );
+            break;
+        case "gemini":
+            await connectToGemini(
+                ws,
+                payload,
+                connectionPcmFile,
+                firstMessage,
+                systemPrompt,
+            );
+            break;
+        default:
+            throw new Error(`Unknown provider: ${provider}`);
+    }
 });
 
 server.on("upgrade", async (req, socket, head) => {

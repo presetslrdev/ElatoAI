@@ -1,73 +1,71 @@
 import { Buffer } from "node:buffer";
 import type { WebSocketServer as _WebSocketServer } from "npm:@types/ws";
 import {
+	EndSensitivity,
 	GoogleGenAI,
 	LiveConnectConfig,
 	LiveServerMessage,
 	Modality,
 	Session,
 } from "npm:@google/genai";
-import { getChatHistory, updateUserSessionTime } from "../supabase.ts";
-import {
-	encoder,
-	FRAME_SIZE,
-	geminiApiKey,
-	isDev,
-	SAMPLE_RATE,
-} from "../utils.ts";
-import pkg from "npm:wavefile";
-const { WaveFile } = pkg;
+import { encoder, FRAME_SIZE, geminiApiKey, isDev } from "../utils.ts";
+import { addConversation } from "../supabase.ts";
 
-export const connectToGemini = async (ws: WebSocket, payload: IPayload) => {
+export const connectToGemini = async (
+	ws: WebSocket,
+	payload: IPayload,
+	connectionPcmFile: Deno.FsFile | null,
+	firstMessage: string,
+	systemPrompt: string,
+) => {
 	const { user, supabase } = payload;
+	const { oai_voice, pitch_factor } = user.personality ?? {
+		oai_voice: "Sadachbia",
+		provider: "gemini",
+		pitch_factor: 1,
+	};
 
-	let connectionPcmFile: Deno.FsFile | null = null;
-	if (isDev) {
-		const filename = `debug_audio_${Date.now()}.pcm`;
-		connectionPcmFile = await Deno.open(filename, {
-			create: true,
-			write: true,
-			append: true,
-		});
-	}
+	const { is_ota, is_reset, volume } = user.device ?? {
+		is_ota: false,
+		is_reset: false,
+		volume: 10,
+	};
 
 	// Send user details to client
 	ws.send(
 		JSON.stringify({
 			type: "auth",
-			volume_control: user.device?.volume ?? 100,
-			is_ota: user.device?.is_ota ?? false,
-			is_reset: user.device?.is_reset ?? false,
+			volume_control: volume,
+			is_ota: is_ota,
+			is_reset: is_reset,
+			pitch_factor: pitch_factor,
 		}),
 	);
-
-	const chatHistory = await getChatHistory(
-		supabase,
-		user.user_id,
-		user.personality?.key ?? null,
-		false,
-	);
-	// const firstMessage = createFirstMessage(chatHistory, payload);
-	// const systemPrompt = createSystemPrompt(chatHistory, payload);
-	let sessionStartTime: number;
 
 	console.log(`Connecting with Gemini key "${geminiApiKey.slice(0, 3)}..."`);
 
 	// Initialize Google GenAI
 	const ai = new GoogleGenAI({ apiKey: geminiApiKey });
-	const model = "gemini-2.0-flash-live-001";
+	const model = "gemini-2.5-flash-preview-native-audio-dialog";
 	const config: LiveConnectConfig = {
 		responseModalities: [Modality.AUDIO],
-		systemInstruction: "You are a surfer bro talking to Kai Lenny",
-		// generationConfig: {
-		// 	speechConfig: {
-		// 		voiceConfig: {
-		// 			prebuiltVoiceConfig: {
-		// 				voiceName: "Zephyr",
-		// 			},
-		// 		},
-		// 	},
-		// },
+		systemInstruction: systemPrompt,
+		speechConfig: {
+			voiceConfig: {
+				prebuiltVoiceConfig: {
+					voiceName: oai_voice,
+				},
+			},
+		},
+		realtimeInputConfig: {
+			automaticActivityDetection: {
+				disabled: false, // Keep VAD enabled
+				endOfSpeechSensitivity: EndSensitivity.END_SENSITIVITY_HIGH, // How sensitive to detect speech ending
+				silenceDurationMs: 100, // How much silence before considering speech ended
+			},
+		},
+		outputAudioTranscription: {},
+		inputAudioTranscription: {},
 	};
 
 	// Response queue for handling Google's callback-based responses
@@ -94,21 +92,26 @@ export const connectToGemini = async (ws: WebSocket, payload: IPayload) => {
 		while (!done) {
 			const message = await waitMessage();
 			turns.push(message);
-			// if (
-			// 	message.serverContent &&
-			// 	message.serverContent.generationComplete
-			// ) {
 
-			// }
 			if (
-				message.serverContent &&
-				message.serverContent.generationComplete
+				message.serverContent
 			) {
-				ws.send(JSON.stringify({
-					type: "server",
-					msg: "RESPONSE.CREATED",
-				}));
-				done = true;
+				if (message.serverContent.generationComplete) {
+					ws.send(JSON.stringify({
+						type: "server",
+						msg: "RESPONSE.CREATED",
+					}));
+					done = true;
+				}
+
+				if (message.serverContent.turnComplete) {
+					ws.send(
+						JSON.stringify({
+							type: "server",
+							msg: "AUDIO.COMMITTED",
+						}),
+					);
+				}
 			}
 		}
 		return turns;
@@ -119,8 +122,6 @@ export const connectToGemini = async (ws: WebSocket, payload: IPayload) => {
 			console.log("Processing Gemini turns");
 			while (geminiSession) {
 				const turns = await handleTurn();
-
-				console.log("Turns:", turns);
 
 				// Combine all audio data from this turn
 				const combinedAudio = turns.reduce(
@@ -141,11 +142,6 @@ export const connectToGemini = async (ws: WebSocket, payload: IPayload) => {
 				);
 
 				if (combinedAudio.length > 0) {
-					console.log(
-						"Received complete audio turn, length:",
-						combinedAudio.length,
-					);
-
 					// Convert back to buffer and send to client
 					const audioBuffer = new Int16Array(combinedAudio);
 					const buffer = Buffer.from(audioBuffer.buffer);
@@ -179,18 +175,47 @@ export const connectToGemini = async (ws: WebSocket, payload: IPayload) => {
 				}
 
 				// // Handle text responses if any
-				// for (const turn of turns) {
-				// 	if (turn.text) {
-				// 		console.log("Received text:", turn.text);
-				// 		addConversation(supabase, "assistant", turn.text, user);
-				// 	}
-				// }
+				let outputTranscriptionText = "";
+				let inputTranscriptionText = "";
+				for (const turn of turns as LiveServerMessage[]) {
+					if (
+						turn.serverContent &&
+						turn.serverContent.outputTranscription
+					) {
+						outputTranscriptionText +=
+							turn.serverContent.outputTranscription.text;
+					}
+
+					if (
+						turn.serverContent &&
+						turn.serverContent.inputTranscription
+					) {
+						inputTranscriptionText +=
+							turn.serverContent.inputTranscription.text;
+					}
+				}
 
 				// Send completion signal
 				ws.send(JSON.stringify({
 					type: "server",
 					msg: "RESPONSE.COMPLETE",
 				}));
+
+				// Add user transcription to supabase
+				await addConversation(
+					supabase,
+					"user",
+					inputTranscriptionText,
+					user,
+				);
+
+				// Add assistant transcription to supabase
+				await addConversation(
+					supabase,
+					"assistant",
+					outputTranscriptionText,
+					user,
+				);
 			}
 		} catch (error) {
 			console.error("Error processing Gemini turns:", error);
@@ -204,10 +229,8 @@ export const connectToGemini = async (ws: WebSocket, payload: IPayload) => {
 			callbacks: {
 				onopen: function () {
 					console.log("Gemini session opened");
-					sessionStartTime = Date.now();
 				},
 				onmessage: function (message: LiveServerMessage) {
-					console.log("Received message:", message);
 					responseQueue.push(message);
 				},
 				onerror: function (e: any) {
@@ -230,7 +253,7 @@ export const connectToGemini = async (ws: WebSocket, payload: IPayload) => {
 		// Send first message if available
 		const inputTurns = [{
 			role: "user",
-			parts: [{ text: "Hello how are you?" }],
+			parts: [{ text: firstMessage }],
 		}];
 		geminiSession?.sendClientContent({ turns: inputTurns });
 		processGeminiTurns();
@@ -257,32 +280,6 @@ export const connectToGemini = async (ws: WebSocket, payload: IPayload) => {
 						mimeType: "audio/pcm;rate=24000", // Gemini expects 16kHz but 24kHz is fine
 					},
 				});
-			} else {
-				// Handle text/JSON messages
-				const message = JSON.parse(data.toString("utf-8"));
-
-				if (
-					message.type === "instruction" &&
-					message.msg === "end_of_speech"
-				) {
-					console.log("end_of_speech detected");
-					// Gemini handles turn detection automatically, but we can send a signal
-					ws.send(
-						JSON.stringify({
-							type: "server",
-							msg: "AUDIO.COMMITTED",
-						}),
-					);
-				}
-
-				if (
-					message.type === "instruction" &&
-					message.msg === "INTERRUPT"
-				) {
-					console.log("interrupt detected");
-					// For Gemini, we might need to close and reopen the session or handle differently
-					// This depends on Gemini's interrupt capabilities
-				}
 			}
 		} catch (e: unknown) {
 			console.error("Error handling message:", (e as Error).message);
@@ -296,12 +293,6 @@ export const connectToGemini = async (ws: WebSocket, payload: IPayload) => {
 
 	ws.on("close", async (code: number, reason: string) => {
 		console.log(`WebSocket closed with code ${code}, reason: ${reason}`);
-		if (sessionStartTime) {
-			const sessionDuration = Math.floor(
-				(Date.now() - sessionStartTime) / 1000,
-			);
-			await updateUserSessionTime(supabase, user, sessionDuration);
-		}
 		geminiSession?.close();
 		if (isDev && connectionPcmFile) {
 			connectionPcmFile.close();

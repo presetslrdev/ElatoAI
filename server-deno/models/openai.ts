@@ -7,14 +7,7 @@ import type {
 
 import { RealtimeClient } from "../realtime/client.js";
 import { RealtimeUtils } from "../realtime/utils.js";
-import {
-	addConversation,
-	createFirstMessage,
-	createSystemPrompt,
-	getChatHistory,
-	getDeviceInfo,
-	updateUserSessionTime,
-} from "../supabase.ts";
+import { addConversation, getDeviceInfo } from "../supabase.ts";
 import { encoder, FRAME_SIZE, isDev, openaiApiKey } from "../utils.ts";
 
 const sendFirstMessage = (client: RealtimeClient, firstMessage: string) => {
@@ -39,18 +32,15 @@ const sendFirstMessage = (client: RealtimeClient, firstMessage: string) => {
 	});
 };
 
-export const connectToOpenAI = async (ws: WebSocket, payload: IPayload) => {
+export const connectToOpenAI = async (
+	ws: WebSocket,
+	payload: IPayload,
+	connectionPcmFile: Deno.FsFile | null,
+	firstMessage: string,
+	systemPrompt: string,
+) => {
 	const { user, supabase } = payload;
 
-	let connectionPcmFile: Deno.FsFile | null = null;
-	if (isDev) {
-		const filename = `debug_audio_${Date.now()}.pcm`;
-		connectionPcmFile = await Deno.open(filename, {
-			create: true,
-			write: true,
-			append: true,
-		});
-	}
 	// send user details to client
 	// when DEV_MODE is true, we send the default values 100, false, false
 	ws.send(
@@ -63,18 +53,6 @@ export const connectToOpenAI = async (ws: WebSocket, payload: IPayload) => {
 		}),
 	);
 
-	const isDoctor = user.user_info.user_type === "doctor";
-
-	const chatHistory = await getChatHistory(
-		supabase,
-		user.user_id,
-		user.personality?.key ?? null,
-		isDoctor,
-	);
-	const firstMessage = createFirstMessage(chatHistory, payload);
-	console.log("firstMessage", firstMessage);
-	const systemPrompt = createSystemPrompt(chatHistory, payload);
-	let sessionStartTime: number;
 	let currentItemId: string | null = null;
 	let currentCallId: string | null = null;
 
@@ -135,7 +113,6 @@ export const connectToOpenAI = async (ws: WebSocket, payload: IPayload) => {
 		// Check if the event is session.created
 		if (event.type === "session.created") {
 			console.log("session created", event);
-			sessionStartTime = Date.now();
 			sendFirstMessage(client, firstMessage);
 		} else if (event.type === "session.updated") {
 			console.log("session updated", event);
@@ -361,12 +338,6 @@ export const connectToOpenAI = async (ws: WebSocket, payload: IPayload) => {
 	// Add more detailed close handling
 	ws.on("close", async (code: number, reason: string) => {
 		console.log(`WebSocket closed with code ${code}, reason: ${reason}`);
-		if (sessionStartTime) {
-			const sessionDuration = Math.floor(
-				(Date.now() - sessionStartTime) / 1000,
-			);
-			await updateUserSessionTime(supabase, user, sessionDuration);
-		}
 		client.disconnect();
 		if (isDev) {
 			if (connectionPcmFile) {
