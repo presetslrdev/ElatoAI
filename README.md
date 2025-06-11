@@ -15,7 +15,7 @@ Realtime AI Speech powered by **OpenAI Realtime API** and **Gemini Live API**, E
 
 </div>
 
-## ⚡️ Realtime AI Speech Models on an ESP32
+## ⚡️ Features SOTA Realtime AI Speech Models on an ESP32
 
 <div align="center" class="flex flex-row gap-4">
 
