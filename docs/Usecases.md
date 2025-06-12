@@ -1,10 +1,10 @@
 # [WIP] Here are some use cases for the Elato AI device
 
-<img src="./assets/usecases.png" alt="Build Custom AI Toys" width="40%">
+<img src="./../assets/usecases.png" alt="Build Custom AI Toys" width="40%">
 
 *Cute AI plush toys for kids, elderly, and more!*
 
-## Healthcare & Companionship:
+## Healthcare ideas:
 
 1. **Kid-friendly hospital buddies**: Plush toys that help kids feel less scared during hospital stays with stories and games when they need them most.
 
@@ -16,7 +16,7 @@
 
 5. **Meditation guides**: Calming voices that walk you through relaxation exercises whenever you need a mental break.
 
-## Learning & Play:
+## Learning & play:
 
 1. **Language conversation partners**: Practice your Spanish, French or any language with a patient friend who never gets tired of helping you get better.
 
@@ -26,7 +26,7 @@
 
 4. **Social skills practice**: A safe space for kids to practice conversations, especially helpful for children on the autism spectrum.
 
-## Helpful Assistants:
+## Helpful assistants:
 
 1. **Simple communication hubs**: Easy voice tools for people who struggle with technology to call family with simple commands.
 
@@ -34,7 +34,7 @@
 
 3. **Custom helpers**: Voice systems designed specifically for people with mobility challenges.
 
-## Creative Applications:
+## Creative applications:
 
 1. **Interactive exhibits**: Imagine talking to Einstein at a science museum or a dinosaur at a natural history exhibit.
 

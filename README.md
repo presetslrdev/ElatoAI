@@ -15,7 +15,7 @@ Realtime AI Speech powered by **OpenAI Realtime API** and **Gemini Live API**, E
 
 </div>
 
-## ⚡️ Features SOTA Realtime AI Speech Models on an ESP32
+## ⚡️ With SOTA Realtime AI Speech Models on an ESP32
 
 <div align="center" class="flex flex-row gap-4">
 
@@ -26,7 +26,7 @@ Realtime AI Speech powered by **OpenAI Realtime API** and **Gemini Live API**, E
 </div>
 
 
-## 📽️ Demo Video
+## 📽️ Demo Video [(✨ Gemini demo)](https://youtu.be/_zUBue3pfVI)
 
 <div align="center">
     <a href="https://www.youtube.com/watch?v=o1eIAwVll5I" target="_blank">
@@ -39,6 +39,9 @@ Realtime AI Speech powered by **OpenAI Realtime API** and **Gemini Live API**, E
 </h3>
 
 </div>
+
+Video links: [OpenAI Demo](https://youtu.be/o1eIAwVll5I) | [Gemini Demo](https://youtu.be/_zUBue3pfVI)
+
 
 ## 👷‍♀️ DIY Hardware Design
 
@@ -94,8 +97,6 @@ npm run dev
 
 4. **Choose edge server option**
 
-<img src="assets/devices.png" alt="Elato Mode" width="100%">
-
 - **ELATO MODE:** Got your own ESP32 DIY hardware device? We offer a fully hosted edge server for you to use! Register your device on the [settings page](https://www.elatoai.com/home/settings/device) and it will automatically connect to our edge server. Check out our [Pricing page](https://www.elatoai.com/#pricing) for more details.
 
 - **DEV MODE:** Alternatively, you can run your own edge server locally by following the instructions below and in the [Deno server README](server-deno/README.md).
@@ -134,21 +135,7 @@ Build and upload the firmware to your ESP32 device. The ESP32 should open an `EL
 Once your Wifi credentials are configured, turn the device off and on again and it should connect to your Wifi and your server. Now you can talk to your AI Character!
 
 
-## 🤖🤖🤖 Getting Started with multiple devices
-
-1. Register your device by adding your ESP32 Device's MAC Address and a unique user code to the `devices` table in Supabase.
-> **Pro Tip:** To find your ESP32-S3 Device's MAC Address, build and upload `test/print_mac_address_test.cpp` using PlatformIO and view the serial monitor.
-
-
-2. Register your user account to this device by adding your unique user code to the [Settings page](http://localhost:3000/home/settings) in the NextJS Frontend. This links your device to your account.
-
-
-3. Set DEV_MODE to `False` in your `frontend-nextjs/.env.local` env variable.
-
-> **Pro Tip:** If you're testing locally, you can keep enabled the `DEV_MODE` macro in the `Config.h` file of your firmware and the Deno server env variable to use your local IP addresses for testing.
-
-
-4. Now you can register multiple devices to your account by repeating the process above.
+## [🤖🤖🤖 Getting Started with multiple devices](./docs/MultipleDevices.md)
 
 ## Project Architecture
 
@@ -159,7 +146,7 @@ ElatoAI consists of three main components:
 3. **ESP32 IoT Client** (`PlatformIO/Arduino`) - to receive the websocket connections from the Edge Server Functions and send audio to the OpenAI and Gemini API via the Deno edge server.
 
 
-## 🌟 Features
+## 🌟 Full list of features
 
 1. **Realtime Speech-to-Speech**: Instant speech conversion powered by OpenAI's Realtime API and Gemini's Live API.
 2. **Create Custom AI Agents**: Create custom agents with different personalities and voices.
@@ -198,7 +185,7 @@ ElatoAI consists of three main components:
 
 ## 📈 Core Use Cases
 
-We have a [Usecases.md](Usecases.md) file that outlines the core use cases for the [Elato AI device](https://www.elatoai.com/products) or any other custom conversational AI device.
+We have a [Usecases.md](./docs/Usecases.md) file that outlines the core use cases for the [Elato AI device](https://www.elatoai.com/products) or any other custom conversational AI device.
 
 ## High-Level Flowchart
 
