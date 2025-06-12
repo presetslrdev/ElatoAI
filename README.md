@@ -33,15 +33,17 @@ Realtime AI Speech powered by **OpenAI Realtime API** and **Gemini Live API**, E
     <img src="https://raw.githubusercontent.com/akdeb/ElatoAI/refs/heads/main/assets/thumbnail.png" alt="Elato AI Demo Video" width="100%" style="border-radius:10px" />
   </a>
 <h3>
+</div>
+
+Video links: [OpenAI Demo](https://youtu.be/o1eIAwVll5I) | [Gemini Demo](https://youtu.be/_zUBue3pfVI)
+
+<div align="center">
 
 [Homepage](https://elatoai.com/) | [Buy AI device](https://www.elatoai.com/products) | [Buy AI Dev Kit](https://www.elatoai.com/products/ai-devkit)
 
 </h3>
 
 </div>
-
-Video links: [OpenAI Demo](https://youtu.be/o1eIAwVll5I) | [Gemini Demo](https://youtu.be/_zUBue3pfVI)
-
 
 ## 👷‍♀️ DIY Hardware Design
 
@@ -134,9 +136,6 @@ Build and upload the firmware to your ESP32 device. The ESP32 should open an `EL
 
 Once your Wifi credentials are configured, turn the device off and on again and it should connect to your Wifi and your server. Now you can talk to your AI Character!
 
-
-## [🤖🤖🤖 Getting Started with multiple devices](./docs/MultipleDevices.md)
-
 ## Project Architecture
 
 ElatoAI consists of three main components:
@@ -183,9 +182,9 @@ ElatoAI consists of three main components:
 | Communication   | Secure WebSockets                        |
 | Libraries       | ArduinoJson, WebSockets, AsyncWebServer, ESP32_Button, Arduino Audio Tools, ArduinoLibOpus        |
 
-## 📈 Core Use Cases
+## [📈 Core Use Cases](./docs/Usecases.md)
 
-We have a [Usecases.md](./docs/Usecases.md) file that outlines the core use cases for the [Elato AI device](https://www.elatoai.com/products) or any other custom conversational AI device.
+## [🤖🤖🤖 Getting Started with multiple devices](./docs/MultipleDevices.md)
 
 ## High-Level Flowchart
 
@@ -256,7 +255,7 @@ lib_deps =
 - Secure WebSockets (WSS) for encrypted data transfers
 - Optional: API Key encryption with 256-bit AES
 - Supabase DB for secure authentication
-- Supabase RLS for all tables
+- Postgres RLS for all tables
 
 ## 🚫 Limitations
 - 3-4s Cold start time while connecting to edge server
