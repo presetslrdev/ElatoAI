@@ -32,12 +32,13 @@ Realtime AI Speech powered by **OpenAI Realtime API** and **Gemini Live API**, E
     <a href="https://www.youtube.com/watch?v=o1eIAwVll5I" target="_blank">
     <img src="https://raw.githubusercontent.com/akdeb/ElatoAI/refs/heads/main/assets/thumbnail.png" alt="Elato AI Demo Video" width="100%" style="border-radius:10px" />
   </a>
-<h3>
 </div>
 
 Video links: [OpenAI Demo](https://youtu.be/o1eIAwVll5I) | [Gemini Demo](https://youtu.be/_zUBue3pfVI)
 
 <div align="center">
+
+<h3>
 
 [Homepage](https://elatoai.com/) | [Buy AI device](https://www.elatoai.com/products) | [Buy AI Dev Kit](https://www.elatoai.com/products/ai-devkit)
 
