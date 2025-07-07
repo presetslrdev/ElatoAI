@@ -6,7 +6,7 @@ export const paymentLink = "https://buy.stripe.com/bIY0033Dc7LB28o9AJ";
 export const devkitPaymentLink = "https://buy.stripe.com/fZefZ12z82rh3cseV5";
 
 export const discordInviteLink = "https://discord.gg/KJWxDPBRUj";
-export const tiktokLink = "https://www.tiktok.com/@elatoai";
+export const tiktokLink = "https://www.tiktok.com/@badmouthbuds";
 export const githubPublicLink = "https://github.com/akdeb/ElatoAI";
 export const businessDemoLink = "https://calendly.com/akadeb/elato-ai-demo";
 export const feedbackFormLink = "https://forms.gle/2QmukEG2FXNwBdee7";
