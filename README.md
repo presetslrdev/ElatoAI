@@ -6,7 +6,7 @@
     <img src="https://img.shields.io/badge/OpenAI-Cookbook-blue?style=for-the-badge&logo=openai" alt="OpenAI" style="margin: 0 10px;">
   </a>
   <a href="https://blog.adafruit.com/2025/05/06/elatoai-realtime-speech-ai-agents-for-esp32/" target="_blank">
-    <img src="https://img.shields.io/badge/Adafruit-Blogpost-red?style=for-the-badge&logo=adafruit" alt="Adafruit" style="margin: 0 10px;">
+    <img src="https://img.shields.io/badge/Adafruit-Blog-red?style=for-the-badge&logo=adafruit" alt="Adafruit" style="margin: 0 10px;">
   </a>
 </div>
 
