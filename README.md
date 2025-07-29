@@ -298,5 +298,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**If you find this project interesting or useful, drop a GitHub ⭐️. It helps a lot!**
+**Check out our hardware offerings at [Elato AI Products](https://www.elatoai.com/). If you find this project interesting or useful, support us by starring this project on GitHub. ⭐**
 
