@@ -1,12 +1,12 @@
 <div align="center" style="margin: 20px 0;">
   <a href="https://cookbook.openai.com/examples/voice_solutions/running_realtime_api_speech_on_esp32_arduino_edge_runtime_elatoai" target="_blank">
-    <img src="https://img.shields.io/badge/OpenAI-Cookbook-blue?style=for-the-badge&logo=openai" alt="OpenAI" style="margin: 0 10px;">
-  </a>
+    <img src="https://img.shields.io/badge/OpenAI-Cookbook-blue?style=for-the-badge&logo=openai" alt="OpenAI" />
+  </a>&nbsp;&nbsp;
   <a href="https://news.ycombinator.com/item?id=43762409" target="_blank">
-    <img src="https://img.shields.io/badge/Hacker_News_Launch-white?style=for-the-badge&logo=ycombinator" alt="Hacker News Launch" style="margin: 0 10px;">
-  </a>
+    <img src="https://img.shields.io/badge/Hacker_News_Launch-white?style=for-the-badge&logo=ycombinator" alt="Hacker News Launch" />
+  </a>&nbsp;&nbsp;
   <a href="https://blog.adafruit.com/2025/05/06/elatoai-realtime-speech-ai-agents-for-esp32/" target="_blank">
-    <img src="https://img.shields.io/badge/Adafruit-Blog-red?style=for-the-badge&logo=adafruit" alt="Adafruit" style="margin: 0 10px;">
+    <img src="https://img.shields.io/badge/Adafruit-Blog-red?style=for-the-badge&logo=adafruit" alt="Adafruit" />
   </a>
 </div>
 
