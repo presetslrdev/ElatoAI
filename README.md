@@ -296,8 +296,6 @@ We welcome contributions
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
----
-
 ## Star History
 
 <div align="center">
@@ -307,4 +305,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Check out our hardware offerings at [Elato AI Products](https://www.elatoai.com/). If you find this project interesting or useful, support us by starring this project on GitHub. ⭐**
 
-
+---
