@@ -7,6 +7,7 @@
 #include <WebSocketsClient.h>
 #include "Audio.h"
 #include "PitchShift.h"
+#include "WakeWord.h"
 
 // WEBSOCKET
 SemaphoreHandle_t wsMutex;
@@ -85,7 +86,9 @@ void transitionToSpeaking() {
     i2sInputFlushScheduled = true;
     
     deviceState = SPEAKING;
-    digitalWrite(I2S_SD_OUT, HIGH);
+    if (I2S_SD_OUT >= 0) {
+        digitalWrite(I2S_SD_OUT, HIGH);
+    }
     speakingStartTime = millis();
     
     // webSocket.enableHeartbeat(30000, 15000, 3);
@@ -106,7 +109,9 @@ void transitionToListening() {
     Serial.println("Transitioned to listening mode");
 
     deviceState = LISTENING;
-    digitalWrite(I2S_SD_OUT, LOW);
+    if (I2S_SD_OUT >= 0) {
+        digitalWrite(I2S_SD_OUT, LOW);
+    }
     // webSocket.disableHeartbeat();
 }
 
@@ -114,7 +119,10 @@ void transitionToListening() {
 void audioStreamTask(void *parameter) {
     Serial.println("Starting I2S stream pipeline...");
     
-    pinMode(I2S_SD_OUT, OUTPUT);
+    if (I2S_SD_OUT >= 0) {
+        pinMode(I2S_SD_OUT, OUTPUT);
+        digitalWrite(I2S_SD_OUT, LOW);
+    }
 
     OpusSettings cfg;
     cfg.sample_rate = SAMPLE_RATE;
@@ -211,6 +219,7 @@ I2SStream i2sInput; //access from micTask only
 StreamCopy micToWsCopier(wsStream, i2sInput);
 volatile bool i2sInputFlushScheduled = false;
 const int MIC_COPY_SIZE = 64;
+WakeWordDetector wakeWord;
 
 void micTask(void *parameter) {
     // Configure and start I2S input stream.
@@ -228,6 +237,7 @@ void micTask(void *parameter) {
     i2sInput.begin(i2sConfig);
 
     micToWsCopier.setDelayOnNoData(0);
+    wakeWord.begin();
 
     while (1) {
         if ( i2sInputFlushScheduled ) {
@@ -238,10 +248,19 @@ void micTask(void *parameter) {
         if (deviceState == LISTENING && webSocket.isConnected()) {
             // Use smaller chunk size to avoid blocking too long
             micToWsCopier.copyBytes(MIC_COPY_SIZE);
-            
+
             // Yield more frequently
             vTaskDelay(1);
         } else {
+            int16_t samples[MIC_COPY_SIZE];
+            size_t bytesRead = i2sInput.readBytes((uint8_t*)samples, sizeof(samples));
+            if (bytesRead > 0) {
+                if (wakeWord.process(samples, bytesRead / sizeof(int16_t))) {
+                    Serial.println("Wake word detected");
+                    deviceState = LISTENING;
+                    scheduleListeningRestart = false;
+                }
+            }
             vTaskDelay(10);
         }
     }

@@ -32,6 +32,18 @@ This firmware turns your ESP32 device into a WebSocket audio client for Elato, e
 | LED (Red)           | GPIO 9            |
 | LED (Green)           | GPIO 8            |
 
+### JC3636W518C_I_Y Pin Map
+
+| **Component** | **JC3636W518C_I_Y** |
+|---------------|---------------------|
+| Microphone SD | GPIO45 |
+| Microphone WS | GPIO46 |
+| Microphone SCK| GPIO42 |
+| Speaker WS    | GPIO1  |
+| Speaker BCK   | GPIO15 |
+| Speaker DATA  | GPIO21 |
+| Speaker MCLK  | GPIO16 |
+
 ## Software Setup
 
 ### Using PlatformIO
@@ -75,7 +87,8 @@ We store the following data in Non-Volatile Storage (NVS) on the ESP32:
 ## Usage
 
 1. Power on the device
-2. The LED indicates status:
+2. Say the configured wake word to begin listening
+3. The LED indicates status:
    - Green 🟢: Setup mode and websocket/wifi is not connected
    - Blue 🔵: Device is speaking
    - Yellow 🟡: Device is listening to user
