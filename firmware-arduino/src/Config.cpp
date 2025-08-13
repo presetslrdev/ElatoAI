@@ -73,16 +73,17 @@ const int BLUE_LED_PIN = 13;
 const int RED_LED_PIN = 9;
 const int GREEN_LED_PIN = 8;
 
-const int I2S_SD = 14;
-const int I2S_WS = 4;
-const int I2S_SCK = 1;
+// Pin mapping adjusted for the JC3636W518 board documented in /docs
+const int I2S_SD = 46;      // Microphone data (SD)
+const int I2S_WS = 45;      // Microphone word select (WS)
+const int I2S_SCK = 42;     // Microphone clock (SCK)
 
-const int I2S_WS_OUT = 5;
-const int I2S_BCK_OUT = 6;
-const int I2S_DATA_OUT = 7;
-const int I2S_SD_OUT = 10;
+const int I2S_WS_OUT = 16;  // Speaker word select (LCK)
+const int I2S_BCK_OUT = 18; // Speaker bit clock (BCK)
+const int I2S_DATA_OUT = 17; // Speaker data (DIN)
+const int I2S_SD_OUT = 48;   // Amplifier mute/shutdown (active low)
 
-const gpio_num_t BUTTON_PIN = GPIO_NUM_2; // Only RTC IO are allowed - ESP32 Pin example
+const gpio_num_t BUTTON_PIN = GPIO_NUM_0; // User button
 
 
 // ----------------- SSL Certificates -----------------
