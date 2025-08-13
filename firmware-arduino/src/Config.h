@@ -21,7 +21,8 @@
 // ---------- Touch mode ----------
 // If you want to use the touch sensor to wake up the device, uncomment the following line
 // If you want to use the button to wake up the device, comment the following line
-#define TOUCH_MODE
+// Wake word activation replaces touch input by default
+// #define TOUCH_MODE
 
 extern Preferences preferences;
 extern bool factory_reset_status;

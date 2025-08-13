@@ -73,14 +73,15 @@ const int BLUE_LED_PIN = 13;
 const int RED_LED_PIN = 9;
 const int GREEN_LED_PIN = 8;
 
-const int I2S_SD = 14;
-const int I2S_WS = 4;
-const int I2S_SCK = 1;
+// JC3636W518C_I_Y module pin mapping
+const int I2S_SD = 45;      // Microphone data
+const int I2S_WS = 46;      // Microphone LRCLK/WS
+const int I2S_SCK = 42;     // Microphone BCLK
 
-const int I2S_WS_OUT = 5;
-const int I2S_BCK_OUT = 6;
-const int I2S_DATA_OUT = 7;
-const int I2S_SD_OUT = 10;
+const int I2S_WS_OUT = 1;   // DAC LRCLK/WS
+const int I2S_BCK_OUT = 15; // DAC BCLK
+const int I2S_DATA_OUT = 21;// DAC data in
+const int I2S_SD_OUT = -1;  // No shutdown pin for PCM5100A
 
 const gpio_num_t BUTTON_PIN = GPIO_NUM_2; // Only RTC IO are allowed - ESP32 Pin example
 
