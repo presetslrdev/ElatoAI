@@ -1,5 +1,6 @@
 #include "Config.h"
 #include <nvs_flash.h>
+#include "pincfg.h"
 
 // ! define preferences
 Preferences preferences;
@@ -73,16 +74,16 @@ const int BLUE_LED_PIN = 13;
 const int RED_LED_PIN = 9;
 const int GREEN_LED_PIN = 8;
 
-const int I2S_SD = 14;
-const int I2S_WS = 4;
-const int I2S_SCK = 1;
+const int I2S_SD = MIC_I2S_SD;
+const int I2S_WS = MIC_I2S_WS;
+const int I2S_SCK = MIC_I2S_SCK;
 
-const int I2S_WS_OUT = 5;
-const int I2S_BCK_OUT = 6;
-const int I2S_DATA_OUT = 7;
-const int I2S_SD_OUT = 10;
+const int I2S_WS_OUT = AUDIO_I2S_WS_IO;
+const int I2S_BCK_OUT = AUDIO_I2S_BCK_IO;
+const int I2S_DATA_OUT = AUDIO_I2S_DO_IO;
+const int I2S_SD_OUT = AUDIO_MUTE_PIN;
 
-const gpio_num_t BUTTON_PIN = GPIO_NUM_2; // Only RTC IO are allowed - ESP32 Pin example
+const gpio_num_t BUTTON_PIN = static_cast<gpio_num_t>(BTN_PIN); // Only RTC IO are allowed - ESP32 Pin example
 
 
 // ----------------- SSL Certificates -----------------
