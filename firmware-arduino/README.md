@@ -15,22 +15,22 @@ This firmware turns your ESP32 device into a WebSocket audio client for Elato, e
 
 ### Pin Connections
 
-| **Component** | **Standard ESP32** |
-|---------------|-------------------|
-| **Microphone** |                   |
-| SD (Data)     | GPIO 14           |
-| WS (Word Select)        | GPIO 4            |
-| SCK (Clock)            | GPIO 1            |
-| **Speaker**   |                  |                   |
-| WS                    | GPIO 5            |
-| BCK             | GPIO 6            |
-| DATA             | GPIO 7            |
-| SD (shutdown)         | GPIO 10           |
-| **Control**             |                   |
-| Button               | GPIO 2            |
-| LED (Blue)              | GPIO 13           |
-| LED (Red)           | GPIO 9            |
-| LED (Green)           | GPIO 8            |
+| **Component** | **JC3636W518 (ESP32-S3)** |
+|---------------|---------------------------|
+| **Microphone** |                           |
+| SD (Data)     | GPIO 46                   |
+| WS (Word Select) | GPIO 45                |
+| SCK (Clock)   | GPIO 42                   |
+| **Speaker**   |                           |
+| WS            | GPIO 16                   |
+| BCK           | GPIO 18                   |
+| DATA          | GPIO 17                   |
+| SD (shutdown) | GPIO 48                   |
+| **Control**   |                           |
+| Button        | GPIO 0                    |
+| LED (Blue)    | GPIO 13                   |
+| LED (Red)     | GPIO 9                    |
+| LED (Green)   | GPIO 8                    |
 
 ## Software Setup
 
